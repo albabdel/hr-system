@@ -29,3 +29,12 @@ export interface Employee {
   role: Role;
   status: 'Active' | 'Inactive' | 'On Leave';
 }
+
+export interface Tenant {
+  _id: string;
+  name: string;
+  theme?: {
+    logoUrl?: string;
+    primary?: string;
+  }
+}

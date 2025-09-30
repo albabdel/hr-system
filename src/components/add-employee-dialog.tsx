@@ -33,7 +33,8 @@ import { departments, positions } from '@/lib/mock-data';
 import type { Employee, Role } from '@/lib/types';
 
 const addEmployeeSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters.'),
+  firstName: z.string().min(2, 'First name must be at least 2 characters.'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters.'),
   email: z.string().email('Invalid email address.'),
   positionId: z.string().min(1, 'Position is required.'),
   departmentId: z.string().min(1, 'Department is required.'),
@@ -45,7 +46,7 @@ type AddEmployeeFormValues = z.infer<typeof addEmployeeSchema>;
 interface AddEmployeeDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onAddEmployee: (employee: Omit<Employee, 'id' | 'avatarUrl' | 'imageHint' | 'status'>) => void;
+  onAddEmployee: (employee: any) => void;
 }
 
 export function AddEmployeeDialog({
@@ -56,7 +57,8 @@ export function AddEmployeeDialog({
   const form = useForm<AddEmployeeFormValues>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       positionId: '',
       departmentId: '',
@@ -70,7 +72,9 @@ export function AddEmployeeDialog({
 
     if (position && department) {
       onAddEmployee({
-        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        name: `${values.firstName} ${values.lastName}`,
         email: values.email,
         position,
         department,
@@ -92,19 +96,34 @@ export function AddEmployeeDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+             <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Jane" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"

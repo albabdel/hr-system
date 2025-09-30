@@ -22,7 +22,13 @@ import type { Employee } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
-export function EmployeeTable({ employees }: { employees: Employee[] }) {
+export function EmployeeTable({
+  employees,
+  onDeleteClick,
+}: {
+  employees: Employee[];
+  onDeleteClick: (employee: Employee) => void;
+}) {
   return (
     <Table>
       <TableHeader>
@@ -74,7 +80,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem>View Profile</DropdownMenuItem>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => onDeleteClick(employee)}>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

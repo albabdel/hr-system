@@ -8,10 +8,13 @@ import { EmployeeTable } from '@/components/employee-table';
 import { employees as initialEmployees } from '@/lib/mock-data';
 import type { Employee } from '@/lib/types';
 import { AddEmployeeDialog } from '@/components/add-employee-dialog';
+import { DeleteEmployeeDialog } from '@/components/delete-employee-dialog';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const handleAddEmployee = (newEmployee: Omit<Employee, 'id' | 'avatarUrl' | 'imageHint' | 'status'>) => {
     const employee: Employee = {
@@ -22,6 +25,19 @@ export default function EmployeesPage() {
       status: 'Active',
     };
     setEmployees([...employees, employee]);
+  };
+
+  const handleDeleteClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedEmployee) {
+      setEmployees(employees.filter((emp) => emp.id !== selectedEmployee.id));
+      setSelectedEmployee(null);
+      setIsDeleteDialogOpen(false);
+    }
   };
 
   return (
@@ -42,13 +58,19 @@ export default function EmployeesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <EmployeeTable employees={employees} />
+          <EmployeeTable employees={employees} onDeleteClick={handleDeleteClick} />
         </CardContent>
       </Card>
       <AddEmployeeDialog
         isOpen={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onAddEmployee={handleAddEmployee}
+      />
+      <DeleteEmployeeDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDeleteConfirm}
+        employeeName={selectedEmployee?.name || ''}
       />
     </>
   );

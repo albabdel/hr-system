@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import TimeClock from "@/models/TimeClock";
+import { validate } from "@/lib/validate";
+import { TimeClockAction } from "@/lib/schemas";
 
 export async function GET() {
   await dbConnect();
@@ -19,7 +21,11 @@ export async function POST(req: NextRequest) {
   await dbConnect();
   const s = getSession();
   if (!s) return NextResponse.json({ error:{message:"Unauthorized"} }, { status:401 });
-  const { employeeId, action, notes } = await req.json(); // action: "IN" | "OUT"
+  
+  const v = await validate(req, TimeClockAction);
+  if (!v.ok) return NextResponse.json({ error:{message:v.error} }, { status:400 });
+
+  const { employeeId, action, notes } = v.data;
 
   if (action === "IN") {
     const open = await TimeClock.findOne({ tenantId: s.tenantId, employeeId, outAt: { $exists: false } });

@@ -38,6 +38,7 @@ const navItems = [
   { href: '/dashboard/lms', icon: BookOpen, label: 'LMS' },
   { href: '/dashboard/engagement', icon: HeartHandshake, label: 'Engagement' },
   { href: '/dashboard/analytics', icon: BarChart, label: 'Analytics' },
+  { href: '/dashboard/settings/brand', icon: Settings, label: 'Brand Settings' },
   { href: '/dashboard/admin', icon: Settings, label: 'Admin' },
 ];
 

@@ -14,6 +14,25 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+function ThemeLoader() {
+  // client-only loader sets CSS vars after fetch
+  return <script dangerouslySetInnerHTML={{__html:`
+    (async function(){
+      try{
+        const r = await fetch('/api/tenant/status',{credentials:'include'});
+        if(!r.ok) return;
+        const s = await r.json();
+        if(s?.theme?.primary){
+          document.documentElement.style.setProperty('--brand', s.theme.primary);
+        }
+        if(s?.theme?.logoUrl){
+          document.documentElement.style.setProperty('--logo-url', 'url('+s.theme.logoUrl+')');
+        }
+      }catch(e){}
+    })();
+  `}} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,6 +44,7 @@ export default function RootLayout({
          {/* Font links are handled by next/font */}
       </head>
       <body>
+        <ThemeLoader />
         {children}
         <Toaster />
       </body>

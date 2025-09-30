@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import LeaveRequest from "@/models/LeaveRequest";
+import { validate } from "@/lib/validate";
+import { LeaveRequestCreate } from "@/lib/schemas";
 
 export async function GET(req: NextRequest) {
   await dbConnect();
@@ -27,18 +29,9 @@ export async function POST(req: NextRequest) {
   const s = getSession();
   if (!s) return NextResponse.json({ error:{message:"Unauthorized"} }, { status:401 });
 
-  const body = await req.json();
-  // expected: { employeeId, typeCode, startDate, endDate, reason }
-  if (!body.employeeId || !body.typeCode || !body.startDate || !body.endDate)
-    return NextResponse.json({ error:{message:"Missing fields"} }, { status:400 });
+  const v = await validate(req, LeaveRequestCreate);
+  if (!v.ok) return NextResponse.json({ error:{ message:v.error } }, { status:400 });
 
-  const created = await LeaveRequest.create({
-    tenantId: s.tenantId,
-    employeeId: body.employeeId,
-    typeCode: body.typeCode,
-    startDate: new Date(body.startDate),
-    endDate: new Date(body.endDate),
-    reason: body.reason || ""
-  });
+  const created = await LeaveRequest.create({ ...v.data, tenantId: s.tenantId });
   return NextResponse.json(created, { status: 201 });
 }

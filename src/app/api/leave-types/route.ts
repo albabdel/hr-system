@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/db";
 import { getSession, requireRole } from "@/lib/auth";
 import LeaveType from "@/models/LeaveType";
+import { validate } from "@/lib/validate";
+import { LeaveTypeCreate } from "@/lib/schemas";
 
 export async function GET() {
   await dbConnect();
@@ -16,7 +18,10 @@ export async function POST(req: NextRequest) {
   const s = getSession();
   if (!s) return NextResponse.json({ error:{message:"Unauthorized"} }, { status:401 });
   requireRole(s, ["OWNER","HR_ADMIN"]);
-  const body = await req.json();
-  const doc = await LeaveType.create({ ...body, tenantId: s.tenantId });
-  return NextResponse.json(doc, { status: 201 });
+
+  const v = await validate(req, LeaveTypeCreate);
+  if (!v.ok) return NextResponse.json({ error:{ message:v.error } }, { status:400 });
+
+  const doc = await LeaveType.create({ ...v.data, tenantId: s.tenantId });
+  return NextResponse.json(doc, { status:201 });
 }

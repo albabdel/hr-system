@@ -2,6 +2,7 @@ import { Schema, model, models } from "mongoose";
 const TenantSchema = new Schema({
   _id: { type: String }, // use slug as id
   name: { type: String, required: true },
+  setupComplete: { type: Boolean, default: false },
   theme: {
     logoUrl: String,
     primary: { type: String, default: "#ffda47" }

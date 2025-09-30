@@ -1,10 +1,19 @@
-'use client';
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { employees } from "@/lib/mock-data";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface ApiEmployee {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl?: string; // assuming API might provide this
+  imageHint?: string;
+  position: string;
+}
 
 const chartData = [
   { name: "Jan", hires: 4, departures: 1 },
@@ -16,9 +25,22 @@ const chartData = [
 ];
 
 export default function DashboardPage() {
-  const activeEmployees = employees.filter(e => e.status === 'Active').length;
-  const onLeave = employees.filter(e => e.status === 'On Leave').length;
+  const [employees, setEmployees] = useState<ApiEmployee[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/employees')
+      .then(res => res.json())
+      .then(data => {
+        setEmployees(data);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const activeEmployees = employees.length; // Simplified for now
+  
   return (
     <div className="grid gap-8">
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -27,7 +49,7 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{employees.length}</div>
+            {loading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{employees.length}</div>}
             <p className="text-xs text-muted-foreground">+2 since last month</p>
           </CardContent>
         </Card>
@@ -36,8 +58,8 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Active Employees</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeEmployees}</div>
-            <p className="text-xs text-muted-foreground">{onLeave} on leave</p>
+            {loading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{activeEmployees}</div>}
+            <p className="text-xs text-muted-foreground">0 on leave</p>
           </CardContent>
         </Card>
         <Card>
@@ -69,20 +91,8 @@ export default function DashboardPage() {
           <CardContent className="pl-2">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData}>
-                <XAxis
-                  dataKey="name"
-                  stroke="#888888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke="#888888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `${value}`}
-                />
+                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`}/>
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--background))",
@@ -103,20 +113,28 @@ export default function DashboardPage() {
              <CardDescription>Recently joined employees.</CardDescription>
           </CardHeader>
           <CardContent>
+             {loading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ) : (
             <div className="space-y-4">
               {employees.slice(0, 4).map((employee) => (
-                <div key={employee.id} className="flex items-center gap-4">
+                <div key={employee._id} className="flex items-center gap-4">
                   <Avatar>
-                    <AvatarImage src={employee.avatarUrl} alt={employee.name} data-ai-hint={employee.imageHint} />
-                    <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={`https://picsum.photos/seed/${employee._id}/40/40`} alt={`${employee.firstName} ${employee.lastName}`} data-ai-hint={'person face'} />
+                    <AvatarFallback>{employee.firstName.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">{employee.name}</p>
-                    <p className="text-sm text-muted-foreground">{employee.position.name}</p>
+                    <p className="font-semibold">{`${employee.firstName} ${employee.lastName}`}</p>
+                    <p className="text-sm text-muted-foreground">{employee.position}</p>
                   </div>
                 </div>
               ))}
             </div>
+            )}
           </CardContent>
         </Card>
       </div>

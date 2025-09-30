@@ -19,7 +19,7 @@ import {
   BarChart,
   Settings,
   FileText,
-  Sitemap,
+  Network,
   CalendarCheck,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -43,7 +43,7 @@ import { Logo } from '@/components/logo';
 
 const navItems = [
     { href: '/dashboard/employees', icon: Users, label: 'Employees' },
-    { href: '/dashboard/org', icon: Sitemap, label: 'Org Chart' },
+    { href: '/dashboard/org', icon: Network, label: 'Org Chart' },
     { href: '/dashboard/recruiting', icon: Briefcase, label: 'Recruiting' },
     { href: '/dashboard/onboarding', icon: ClipboardList, label: 'Onboarding' },
     { href: '/dashboard/time', icon: Clock, label: 'Time' },

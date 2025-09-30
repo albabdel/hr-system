@@ -16,6 +16,8 @@ import {
   BarChart,
   Settings,
   FileText,
+  Sitemap,
+  CalendarCheck,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -24,9 +26,11 @@ import { Logo } from '@/components/logo';
 
 const navItems = [
   { href: '/dashboard/employees', icon: Users, label: 'Employees' },
+  { href: '/dashboard/org', icon: Sitemap, label: 'Org Chart' },
   { href: '/dashboard/recruiting', icon: Briefcase, label: 'Recruiting' },
   { href: '/dashboard/onboarding', icon: ClipboardList, label: 'Onboarding' },
   { href: '/dashboard/time', icon: Clock, label: 'Time' },
+  { href: '/dashboard/leave', icon: CalendarCheck, label: 'Leave' },
   { href: '/dashboard/payroll', icon: CreditCard, label: 'Payroll' },
   { href: '/dashboard/benefits', icon: Wallet, label: 'Benefits' },
   { href: '/dashboard/performance', icon: Activity, label: 'Performance' },

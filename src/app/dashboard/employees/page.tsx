@@ -1,29 +1,55 @@
+'use client';
+
+import { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EmployeeTable } from '@/components/employee-table';
-import { employees } from '@/lib/mock-data';
+import { employees as initialEmployees } from '@/lib/mock-data';
+import type { Employee } from '@/lib/types';
+import { AddEmployeeDialog } from '@/components/add-employee-dialog';
 
 export default function EmployeesPage() {
+  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const handleAddEmployee = (newEmployee: Omit<Employee, 'id' | 'avatarUrl' | 'imageHint' | 'status'>) => {
+    const employee: Employee = {
+      ...newEmployee,
+      id: `emp${employees.length + 1}`,
+      avatarUrl: `https://picsum.photos/seed/${employees.length + 1}/40/40`,
+      imageHint: 'person face',
+      status: 'Active',
+    };
+    setEmployees([...employees, employee]);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Employees</CardTitle>
-            <CardDescription>
-              Manage your organization&apos;s employees.
-            </CardDescription>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Employees</CardTitle>
+              <CardDescription>
+                Manage your organization&apos;s employees.
+              </CardDescription>
+            </div>
+            <Button size="sm" className="gap-1" onClick={() => setIsAddDialogOpen(true)}>
+              <PlusCircle className="h-4 w-4" />
+              Add Employee
+            </Button>
           </div>
-          <Button size="sm" className="gap-1">
-            <PlusCircle className="h-4 w-4" />
-            Add Employee
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <EmployeeTable employees={employees} />
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent>
+          <EmployeeTable employees={employees} />
+        </CardContent>
+      </Card>
+      <AddEmployeeDialog
+        isOpen={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onAddEmployee={handleAddEmployee}
+      />
+    </>
   );
 }

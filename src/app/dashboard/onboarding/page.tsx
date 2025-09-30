@@ -5,7 +5,7 @@ export default function OnboardingPage() {
     <Card>
       <CardHeader>
         <CardTitle>Onboarding</CardTitle>
-        <CardDescription>Manage onboarding checklists and tasks for new hires.</CardHeader>
+        <CardDescription>Manage onboarding checklists and tasks for new hires.</CardDescription>
       </CardHeader>
     </Card>
   );

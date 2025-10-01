@@ -5,6 +5,9 @@ import RegisterTenant from "./screens/RegisterTenant";
 import { AppLayout } from "./ui/AppLayout";
 import EmployeesList from "./screens/employees/EmployeesList";
 import EmployeeEdit from "./screens/employees/EmployeeEdit";
+import LmsCoursesList from "./screens/lms/LmsCoursesList";
+import LmsCourseDetail from "./screens/lms/LmsCourseDetail";
+import LmsLesson from "./screens/lms/LmsLesson";
 import { isAuthed } from "./lib/auth";
 
 function guard() {
@@ -22,7 +25,10 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", loader: () => redirect("/employees") },
       { path: "/employees", element: <EmployeesList /> },
-      { path: "/employees/:id", element: <EmployeeEdit /> }
+      { path: "/employees/:id", element: <EmployeeEdit /> },
+      { path: "/lms", element: <LmsCoursesList /> },
+      { path: "/lms/courses/:id", element: <LmsCourseDetail /> },
+      { path: "/lms/lessons/:id", element: <LmsLesson /> },
     ],
   },
 ]);

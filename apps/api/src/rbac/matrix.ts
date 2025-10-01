@@ -14,7 +14,9 @@ export const PERMISSIONS: Matrix = {
     { action: Action.LEAVE_REQUEST_READ, scope: Scope.TENANT },
     { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.TENANT },
     { action: Action.LEAVE_TYPE_MANAGE, scope: Scope.TENANT },
-    { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT }
+    { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT },
+    { action: Action.LMS_MANAGE, scope: Scope.TENANT },
+    { action: Action.LMS_READ, scope: Scope.TENANT }
   ],
   HR_ADMIN: [
     { action: Action.EMPLOYEE_READ, scope: Scope.TENANT },
@@ -29,7 +31,9 @@ export const PERMISSIONS: Matrix = {
     { action: Action.LEAVE_REQUEST_READ, scope: Scope.TENANT },
     { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.TENANT },
     { action: Action.LEAVE_TYPE_MANAGE, scope: Scope.TENANT },
-    { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT }
+    { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT },
+    { action: Action.LMS_MANAGE, scope: Scope.TENANT },
+    { action: Action.LMS_READ, scope: Scope.TENANT }
   ],
   MANAGER: [
     { action: Action.EMPLOYEE_READ, scope: Scope.TENANT }, // team will be narrower later
@@ -37,14 +41,16 @@ export const PERMISSIONS: Matrix = {
     { action: Action.TIME_CLOCK, scope: Scope.TENANT },
     { action: Action.LEAVE_REQUEST_CREATE, scope: Scope.TENANT },
     { action: Action.LEAVE_REQUEST_READ, scope: Scope.TENANT },
-    { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.TENANT }
+    { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.TENANT },
+    { action: Action.LMS_READ, scope: Scope.TENANT }
   ],
   EMPLOYEE: [
     { action: Action.EMPLOYEE_READ, scope: Scope.OWN },
     { action: Action.TIME_CLOCK, scope: Scope.OWN },
     { action: Action.LEAVE_REQUEST_CREATE, scope: Scope.OWN },
     { action: Action.LEAVE_REQUEST_READ, scope: Scope.OWN },
-    { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.OWN }
+    { action: Action.LEAVE_REQUEST_CANCEL, scope: Scope.OWN },
+    { action: Action.LMS_READ, scope: Scope.OWN }
   ]
 };
 export function getPermission(role: Role, action: Action): Permission | null {

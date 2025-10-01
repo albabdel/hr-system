@@ -14,6 +14,7 @@ import timeClockRouter from './routes/timeclock.js';
 import leaveTypesRouter from './routes/leave-types.js';
 import leaveRequestsRouter from './routes/leave-requests.js';
 import holidaysRouter from './routes/holidays.js';
+import lmsRouter from './routes/lms.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -39,6 +40,7 @@ export function createApp() {
   app.use('/v1/leave', leaveTypesRouter);
   app.use('/v1/leave', leaveRequestsRouter);
   app.use('/v1/holidays', holidaysRouter);
+  app.use('/v1/lms', lmsRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

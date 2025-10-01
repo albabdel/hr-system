@@ -13,6 +13,7 @@ export function AppLayout() {
         <div className="text-lg font-semibold">HR SaaS</div>
         <nav className="space-y-2">
           <Link to="/employees" className="block hover:underline">Employees</Link>
+          <Link to="/lms" className="block hover:underline">LMS</Link>
         </nav>
       </aside>
       <main className="p-6">

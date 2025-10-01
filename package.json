@@ -1,28 +1,19 @@
 {
-  "name": "vrs-saas",
-  "version": "1.0.0",
+  "name": "hr-saas",
   "private": true,
-  "description": "A multi-tenant HR SaaS application.",
-  "author": "",
-  "license": "MIT",
+  "packageManager": "pnpm@9.6.0",
   "scripts": {
-    "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "start": "turbo run start",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "prepare": "husky"
+    "test": "turbo run test",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "eslint": "^8.57.0",
-    "husky": "^9.1.1",
-    "lint-staged": "^15.2.7",
+    "eslint": "^9.10.0",
     "prettier": "^3.3.3",
-    "turbo": "^2.0.6",
-    "typescript": "^5.5.3"
-  },
-  "packageManager": "pnpm@9.5.0"
+    "turbo": "^2.1.2"
+  }
 }

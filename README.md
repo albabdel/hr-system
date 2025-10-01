@@ -1,20 +1,12 @@
-# VRS SaaS
+# HR SaaS (Stage 1)
+- Monorepo scaffold with API, Web, Worker.
+- Docker services: Postgres, Redis, MinIO, Mailhog.
 
-A multi-tenant HR SaaS application.
-
-## Structure
-
-- `apps/api`: Express.js backend
-- `apps/web`: React (Vite) frontend
-- `apps/worker`: BullMQ job processor
-- `packages/ui`: Shared React components (shadcn/ui)
-- `packages/config`: ESLint, Prettier, TSConfig configurations
-- `packages/types`: Shared types and Zod schemas
-
-## Development
-
-To run all applications in development mode:
-
-```sh
-pnpm dev
-```
+## Dev quickstart
+1) pnpm i
+2) docker compose up -d
+3) pnpm -w run dev
+- API: http://localhost:3000/healthz
+- Web: http://localhost:5173
+- Mailhog: http://localhost:8025
+- MinIO: http://localhost:9001 (minio / minio123)

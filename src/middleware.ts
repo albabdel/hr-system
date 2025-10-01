@@ -22,6 +22,10 @@ export async function middleware(req: NextRequest) {
 
   // If no token and not a public route, redirect to login
   if (!token) {
+    // Allow the /api/tenant/status call for the theme loader on the login page
+    if (path === '/api/tenant/status') {
+      return NextResponse.next();
+    }
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

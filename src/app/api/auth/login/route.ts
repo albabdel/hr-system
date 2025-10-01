@@ -14,14 +14,22 @@ export async function POST(req: NextRequest) {
   }
 
   const tenantId = req.headers.get("x-tenant-id")?.toLowerCase() || resolveTenantId();
-  const user = await User.findOne({ tenantId, email: email.toLowerCase() }).lean();
-  if (!user?.passwordHash) return NextResponse.json({ error:{message:"Invalid credentials"} }, { status:401 });
+  const user = await User.findOne({ tenantId, email: String(email).toLowerCase() }).lean();
+  if (!user?.passwordHash) {
+    return NextResponse.json({ error:{message:"Invalid credentials"} }, { status:401 });
+  }
 
-  const ok = await bcrypt.compare(password, user.passwordHash);
+  const ok = await bcrypt.compare(String(password), user.passwordHash);
   if (!ok) return NextResponse.json({ error:{message:"Invalid credentials"} }, { status:401 });
 
   const token = signJwt({ userId: String(user._id), tenantId, role: user.role || "EMPLOYEE" });
   const res = NextResponse.json({ ok:true });
-  res.cookies.set("vrs_token", token, { httpOnly:true, sameSite:"lax", path:"/", secure:process.env.NODE_ENV==="production", maxAge:60*60*24*7 });
+  res.cookies.set("vrs_token", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7,
+  });
   return res;
 }

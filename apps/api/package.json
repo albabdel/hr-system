@@ -13,8 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset --force",
-    "seed": "tsx prisma/seed.ts",
-    "rls:smoke": "tsx scripts/rls-smoke.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.1.1",

@@ -10,6 +10,7 @@ import { prisma } from '../db.js';
 import { presignPut, presignGet } from '../storage/s3.js';
 import { auditLog } from '../audit.js';
 import crypto from 'crypto';
+import { enqueueFileScan } from '../worker/producer.js';
 
 const router = Router();
 
@@ -62,7 +63,7 @@ router.post('/sign-upload', tenantResolver, requireAuth, rbacGuard(Action.EMPLOY
   });
 
   // enqueue scan job
-  await import('../worker/producer.js').then((m) => m.enqueueFileScan({ tenantId, fileId: file.id, objectKey }));
+  await enqueueFileScan({ tenantId, fileId: file.id, objectKey });
 
   res.json({ uploadUrl: url, fileId: file.id, objectKey });
 });

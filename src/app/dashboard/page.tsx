@@ -15,6 +15,12 @@ interface ApiEmployee {
   position: string;
 }
 
+interface Metrics {
+  headcount: number;
+  pendingLeave: number;
+  openClocks: number;
+}
+
 const chartData = [
   { name: "Jan", hires: 4, departures: 1 },
   { name: "Feb", hires: 3, departures: 2 },
@@ -26,21 +32,21 @@ const chartData = [
 
 export default function DashboardPage() {
   const [employees, setEmployees] = useState<ApiEmployee[]>([]);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetch('/api/employees')
-      .then(res => res.json())
-      .then(data => {
-        setEmployees(data);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch('/api/employees').then(res => res.json()),
+      fetch('/api/metrics').then(res => res.json())
+    ]).then(([employeeData, metricsData]) => {
+      setEmployees(employeeData);
+      setMetrics(metricsData);
+    }).catch(console.error)
+    .finally(() => setLoading(false));
   }, []);
 
-  const activeEmployees = employees.length; // Simplified for now
-  
   return (
     <div className="grid gap-8">
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -49,26 +55,26 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{employees.length}</div>}
+            {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.headcount}</div>}
             <p className="text-xs text-muted-foreground">+2 since last month</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Employees</CardTitle>
+            <CardTitle className="text-sm font-medium">Clocked In</CardTitle>
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{activeEmployees}</div>}
-            <p className="text-xs text-muted-foreground">0 on leave</p>
+            {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.openClocks}</div>}
+             <p className="text-xs text-muted-foreground">Currently active</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Positions</CardTitle>
+            <CardTitle className="text-sm font-medium">Pending Leave</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
-            <p className="text-xs text-muted-foreground">2 new this week</p>
+             {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.pendingLeave}</div>}
+            <p className="text-xs text-muted-foreground">Requests needing review</p>
           </CardContent>
         </Card>
         <Card>

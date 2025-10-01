@@ -30,3 +30,13 @@ export const TimeClockAction = z.object({
   action: z.enum(["IN","OUT"]),
   notes: z.string().max(300).optional(),
 });
+
+export const EmployeeBulk = z.array(z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email().optional(),
+  department: z.string().optional(),
+  position: z.string().optional(),
+  hireDate: z.string().optional(), // ISO date
+  managerEmail: z.string().email().optional(),
+})).min(1).max(5000);

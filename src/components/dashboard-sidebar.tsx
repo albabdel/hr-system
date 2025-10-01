@@ -18,6 +18,7 @@ import {
   FileText,
   Network,
   CalendarCheck,
+  UploadCloud,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ import { Logo } from '@/components/logo';
 
 const navItems = [
   { href: '/dashboard/employees', icon: Users, label: 'Employees' },
+  { href: '/dashboard/employees/import', icon: UploadCloud, label: 'Import Employees'},
   { href: '/dashboard/org', icon: Network, label: 'Org Chart' },
   { href: '/dashboard/recruiting', icon: Briefcase, label: 'Recruiting' },
   { href: '/dashboard/onboarding', icon: ClipboardList, label: 'Onboarding' },
@@ -51,7 +53,7 @@ export function DashboardSidebar() {
         <Logo className="h-10 w-10" />
         <h1 className="text-lg font-bold text-foreground">VRS Platform</h1>
       </div>
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (

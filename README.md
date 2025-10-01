@@ -1,20 +1,25 @@
-# HR SaaS (Stage 2)
-Core database schema with Prisma. First migration and seed.
+# HR SaaS (Stage 3)
+Postgres RLS + policies for tenant isolation.
 
-## Env
-- Copy `apps/api/.env.example` to `apps/api/.env` and set `DATABASE_URL` if needed.
+## What this adds
+- RLS enabled and forced on User, Department, Employee, FileObject, AuditLog.
+- Policies require `current_setting('app.tenant_id')` to match `tenantId`.
+- Boot check: aborts if RLS is misconfigured.
+- Smoke script that proves reads/writes are scoped.
 
 ## Commands
 ```bash
-pnpm i
-pnpm --filter @hr/api prisma:generate
-pnpm --filter @hr/api prisma:migrate --name init
-pnpm --filter @hr/api seed
+# Create migration
+pnpm --filter @hr/api prisma:migrate --name rls_init
+
+# Verify app boots and RLS is verified
+pnpm --filter @hr/api dev
+
+# Run smoke test (after Stage 2 seed)
+pnpm --filter @hr/api rls:smoke
 ```
 
-## Verify
+## Expected
 
-```bash
-curl http://localhost:3000/healthz
-# Expect: {"ok":true}
-```
+* API logs: “RLS verified for tables: User, Department, Employee, FileObject, AuditLog”.
+* Smoke prints: “RLS smoke passed: same-tenant read ok, cross-tenant blocked.”

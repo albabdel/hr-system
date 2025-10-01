@@ -1,6 +1,6 @@
 {
   "name": "@hr/api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset --force",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "rls:smoke": "tsx scripts/rls-smoke.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",

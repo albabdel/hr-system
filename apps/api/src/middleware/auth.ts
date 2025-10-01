@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt.js';
 import { HttpError } from '../errors.js';
-import type { Role } from '@prisma/client';
+import type { Role } from '../rbac/types.js';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -26,12 +26,4 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
     if (e instanceof HttpError) throw e;
     throw new HttpError(401, 'UNAUTHORIZED', 'Invalid or expired token');
   }
-}
-
-export function requireRoles(...roles: Array<Role>) {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    if (!req.user) throw new HttpError(401, 'UNAUTHORIZED', 'Missing user');
-    if (!roles.includes(req.user.role)) throw new HttpError(403, 'FORBIDDEN', 'Insufficient role');
-    next();
-  };
 }

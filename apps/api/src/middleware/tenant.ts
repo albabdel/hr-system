@@ -22,6 +22,15 @@ function extractSubdomain(host?: string): string | null {
 }
 
 export async function tenantResolver(req: Request, _res: Response, next: NextFunction) {
+  // Test shortcut: bypass DB lookup
+  if (process.env.NODE_ENV === 'test') {
+    const testTid = req.header('x-tenant-test');
+    if (testTid) {
+      req.tenant = { tenantId: testTid, tenantSlug: 'test' };
+      return next();
+    }
+  }
+  
   const header = (req.header('x-tenant-id') || '').trim();
   const byHeader = header || null;
   const bySub = extractSubdomain(req.headers.host);

@@ -5,8 +5,10 @@ import { signAccessToken, signRefreshToken, verifyToken } from '../utils/jwt.js'
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { HttpError, zParse } from '../errors.js';
 import { registry } from '../openapi.js';
-import { requireAuth, requireRoles } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { tenantResolver } from '../middleware/tenant.js';
+import { rbacGuard } from '../rbac/guard.js';
+import { Action } from '../rbac/types.js';
 import crypto from 'crypto';
 
 const router = Router();
@@ -181,7 +183,7 @@ registry.registerPath({
 });
 registry.registerComponent("securitySchemes", "bearerAuth", { type: "http", scheme: "bearer" });
 
-router.post('/invite', tenantResolver, requireAuth, requireRoles('OWNER', 'HR_ADMIN'), async (req, res) => {
+router.post('/invite', tenantResolver, requireAuth, rbacGuard(Action.USER_INVITE), async (req, res) => {
   const { email, name, role } = zParse(InviteBody)(req.body);
   const { tenantId } = req.tenant!;
 

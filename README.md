@@ -1,24 +1,19 @@
-# HR SaaS (Stage 5)
-Typed RBAC with permission matrix, middleware, and tests.
+# HR SaaS (Stage 6)
+Employees API vertical slice.
 
-## What this adds
-- `Action`, `Scope`, `Permission` types.
-- Matrix for OWNER, HR_ADMIN, MANAGER, EMPLOYEE.
-- `rbacGuard(action)` middleware.
-- Test shortcut for tenant: header `x-tenant-test` in `NODE_ENV=test`.
-- Probe routes under `/v1/probe` to verify guards.
+## Endpoints
+- `GET /v1/employees?cursor&limit&search&departmentId&status`
+- `POST /v1/employees`
+- `GET /v1/employees/:id`
+- `PATCH /v1/employees/:id`
+- `DELETE /v1/employees/:id`
 
-## Try it
-- Start API: `pnpm --filter @hr/api dev`
-- Call with an OWNER token to:
-  - `GET /v1/probe/employee/:userId`
-  - `POST /v1/probe/employee`
-  - `DELETE /v1/probe/employee/:id`
+## Notes
+- RLS enforced; every handler sets `app.tenant_id` in a transaction.
+- RBAC required: read/create/update/delete.
+- Audit logs on CUD with before/after.
+- Rate limits on writes.
 
-## Tests
-- `pnpm --filter @hr/api test`
-- Covers:
-  - EMPLOYEE: can read self only.
-  - MANAGER: read OK, create/delete blocked.
-  - HR_ADMIN: create/delete OK.
-  - OWNER: all OK.
+## Try
+- Swagger UI: `http://localhost:3000/docs`
+- Seed adds ~40 employees for pagination.

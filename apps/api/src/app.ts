@@ -7,6 +7,7 @@ import { verifyRlsOrExit } from './rls.js';
 import { errorMiddleware } from './errors.js';
 import authRouter from './routes/auth.js';
 import probeRouter from './routes/probe.js';
+import employeesRouter from './routes/employees.js';
 import { mountDocs } from './openapi.js';
 
 export function createApp() {
@@ -24,6 +25,7 @@ export function createApp() {
 
   app.use('/auth', authRouter);
   app.use('/v1/probe', probeRouter);
+  app.use('/v1/employees', employeesRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

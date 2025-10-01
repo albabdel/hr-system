@@ -1,38 +1,42 @@
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export async function middleware(req: NextRequest) {
-  const token = req.cookies.get("vrs_token")?.value;
+export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  const isPublicApi = path.startsWith('/api/auth/') || path.startsWith('/api/public/');
-  const isPublicPage = path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/careers');
-  
-  // Allow public API routes and pages to be accessed without a token
-  if (isPublicApi || isPublicPage) {
-    // If user is logged in and tries to access login/register, redirect to dashboard
-    if (token && (path.startsWith('/login') || path.startsWith('/register'))) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/dashboard';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
+  // 1) Always let API traffic through (prevents HTML redirects on JSON endpoints)
+  if (path.startsWith("/api/")) return NextResponse.next();
 
-  // If no token and not a public route, redirect to login
-  if (!token) {
-    // Allow the /api/tenant/status call for the theme loader on the login page
-    if (path === '/api/tenant/status') {
-      return NextResponse.next();
-    }
+  // 2) Public, no-login pages
+  const isPublicPage =
+    path.startsWith("/login") ||
+    path.startsWith("/register") ||
+    path.startsWith("/careers") ||
+    path.startsWith("/offer/"); // public signing links
+
+  // 3) Static/assets
+  if (path.startsWith("/_next") || path === "/favicon.ico") return NextResponse.next();
+
+  const token = req.cookies.get("vrs_token")?.value;
+
+  // 4) Redirect unauthenticated page requests to login
+  if (!token && !isPublicPage) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // If user is logged in, let them proceed. The setup check will be handled client-side.
+  // 5) Authenticated users shouldn’t see auth pages
+  if (token && (path.startsWith("/login") || path.startsWith("/register"))) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/((?!_next|public|favicon.ico).*)"] };
+// Keep this matcher broad; the early return above handles /api/*
+export const config = {
+  matcher: ["/((?!public).*)"],
+};

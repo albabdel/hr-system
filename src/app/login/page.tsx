@@ -20,10 +20,13 @@ export default function LoginPage() {
     };
     try {
       const res = await fetch("/api/auth/login", {
-        method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(payload)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
+      let data: any = null;
+      const text = await res.text();
+      try { data = JSON.parse(text); } catch { data = { error: { message: text.slice(0, 200) } }; }
       if (!res.ok) throw new Error(data?.error?.message || "Login failed");
       r.replace("/setup"); // will redirect to /dashboard if already completed
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }

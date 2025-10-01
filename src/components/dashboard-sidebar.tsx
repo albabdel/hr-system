@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -19,6 +20,7 @@ import {
   Network,
   CalendarCheck,
   UploadCloud,
+  UserPlus,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -30,6 +32,7 @@ const navItems = [
   { href: '/dashboard/employees/import', icon: UploadCloud, label: 'Import Employees'},
   { href: '/dashboard/org', icon: Network, label: 'Org Chart' },
   { href: '/dashboard/recruiting', icon: Briefcase, label: 'Recruiting' },
+  { href: '/dashboard/recruiting/candidates', icon: UserPlus, label: 'Candidates' },
   { href: '/dashboard/onboarding', icon: ClipboardList, label: 'Onboarding' },
   { href: '/dashboard/time', icon: Clock, label: 'Time' },
   { href: '/dashboard/leave', icon: CalendarCheck, label: 'Leave' },

@@ -2,43 +2,27 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname;
+  const p = req.nextUrl.pathname;
 
-  // 1) Always bypass APIs (avoid HTML on JSON)
-  if (path.startsWith("/api/")) return NextResponse.next();
-
-  // 2) Always bypass Next.js static assets and public files
+  // Bypass APIs and assets
+  if (p.startsWith("/api/")) return NextResponse.next();
   if (
-    path.startsWith("/_next/") ||
-    path.startsWith("/static/") ||
-    path.startsWith("/images/") ||
-    path.startsWith("/assets/") ||
-    path === "/favicon.ico" ||
-    path === "/robots.txt" ||
-    path === "/sitemap.xml"
+    p.startsWith("/_next/") || p.startsWith("/static/") || p.startsWith("/images/") ||
+    p.startsWith("/assets/") || p === "/favicon.ico" || p === "/robots.txt" || p === "/sitemap.xml"
   ) return NextResponse.next();
 
-  // 3) Public pages
-  const isPublicPage =
-    path.startsWith("/login") ||
-    path.startsWith("/register") ||
-    path.startsWith("/careers") ||
-    path.startsWith("/offer/");
+  const publicPage =
+    p.startsWith("/login") || p.startsWith("/register") ||
+    p.startsWith("/careers") || p.startsWith("/offer/");
 
   const token = req.cookies.get("vrs_token")?.value;
 
-  if (!token && !isPublicPage) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  if (!token && !publicPage) {
+    const url = req.nextUrl.clone(); url.pathname = "/login"; return NextResponse.redirect(url);
   }
-
-  if (token && (path.startsWith("/login") || path.startsWith("/register"))) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+  if (token && (p.startsWith("/login") || p.startsWith("/register"))) {
+    const url = req.nextUrl.clone(); url.pathname = "/dashboard"; return NextResponse.redirect(url);
   }
-
   return NextResponse.next();
 }
 

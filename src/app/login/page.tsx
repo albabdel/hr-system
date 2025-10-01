@@ -15,23 +15,21 @@ export default function LoginPage() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); setErr(null); setLoading(true);
     const fd = new FormData(e.currentTarget);
-    const payload = {
-      email: String(fd.get("email")).trim().toLowerCase(),
-      password: String(fd.get("password"))
-    };
+    const email = String(fd.get("email")).trim().toLowerCase();
+    const password = String(fd.get("password"));
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-tenant-id": "demo",
-        },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", "x-tenant-id": "demo" }, // dev
+        body: JSON.stringify({ email, password }),
       });
-      let data: any = null;
+
+      // defensive parse (prevents UI crashes on bad responses)
       const text = await res.text();
-      try { data = JSON.parse(text); } catch { data = { error: { message: text.slice(0, 200) } }; }
+      let data:any = null;
+      try { data = JSON.parse(text); } catch { data = { error:{ message: text.slice(0,200) } }; }
       if (!res.ok) throw new Error(data?.error?.message || "Login failed");
+      
       r.replace("/setup"); // will redirect to /dashboard if already completed
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }
   }

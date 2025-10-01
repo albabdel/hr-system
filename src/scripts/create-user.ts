@@ -8,23 +8,18 @@ import User from "@/models/User";
 
 async function main() {
   if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI missing");
-  await mongoose.connect(process.env.MONGODB_URI, { dbName: "vrs" });
-
+  await mongoose.connect(process.env.MONGODB_URI);
   const tenantId = "demo";
   const email = "abdelqader.badarnah@gmail.com";
-  const password = "admin";
+  const passwordHash = await bcrypt.hash("admin", 12);
 
-  await Tenant.findByIdAndUpdate(tenantId, { _id: tenantId, name: "Demo", theme:{primary:"#ffda47"} }, { upsert: true, new: true });
-  console.log("Upserted tenant:", tenantId);
-  
-  const passwordHash = await bcrypt.hash(password, 12);
+  await Tenant.findByIdAndUpdate(tenantId, { _id: tenantId, name: "Demo", theme:{ primary:"#ffda47" } }, { upsert:true });
   await User.findOneAndUpdate(
     { tenantId, email: email.toLowerCase() },
     { $set: { name: "Abed", passwordHash, role: "OWNER" } },
-    { upsert: true, new: true }
+    { upsert:true, new:true }
   );
-
-  console.log("User created:", email, "tenant:", tenantId);
+  console.log("User ready:", email, "tenant:", tenantId);
   await mongoose.disconnect();
 }
 main().catch(e => { console.error(e); process.exit(1); });

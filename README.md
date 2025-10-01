@@ -1,25 +1,16 @@
-# HR SaaS (Stage 3)
-Postgres RLS + policies for tenant isolation.
+# HR SaaS (Stage 4)
+Express API with tenant resolution, JWT auth, Zod validation, and OpenAPI docs.
 
-## What this adds
-- RLS enabled and forced on User, Department, Employee, FileObject, AuditLog.
-- Policies require `current_setting('app.tenant_id')` to match `tenantId`.
-- Boot check: aborts if RLS is misconfigured.
-- Smoke script that proves reads/writes are scoped.
+## Endpoints
+- POST `/auth/register-tenant`
+- POST `/auth/login` (requires `x-tenant-id` header or subdomain)
+- POST `/auth/refresh` (requires tenant)
+- POST `/auth/invite` (requires access token with OWNER or HR_ADMIN)
 
-## Commands
-```bash
-# Create migration
-pnpm --filter @hr/api prisma:migrate --name rls_init
+## Docs
+- Swagger UI: `http://localhost:3000/docs`
+- JSON spec: `http://localhost:3000/openapi.json`
 
-# Verify app boots and RLS is verified
-pnpm --filter @hr/api dev
-
-# Run smoke test (after Stage 2 seed)
-pnpm --filter @hr/api rls:smoke
-```
-
-## Expected
-
-* API logs: “RLS verified for tables: User, Department, Employee, FileObject, AuditLog”.
-* Smoke prints: “RLS smoke passed: same-tenant read ok, cross-tenant blocked.”
+## Notes
+- For tenant-scoped queries we run `set_config('app.tenant_id', ...)` inside a Prisma transaction per request/route.
+- Seeded OWNER uses a legacy sha256 hash; login accepts it until you re-seed with bcrypt.

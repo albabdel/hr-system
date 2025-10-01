@@ -21,26 +21,29 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users       User[]
-  departments Department[]
-  employees   Employee[]
-  files       FileObject[]
-  auditLogs   AuditLog[]
+  users         User[]
+  departments   Department[]
+  employees     Employee[]
+  files         FileObject[]
+  auditLogs     AuditLog[]
+  refreshTokens RefreshToken[]
 }
 
 model User {
-  id            String   @id @default(uuid())
-  tenantId      String
-  email         String
-  name          String
-  role          Role
-  passwordHash  String
-  invitedAt     DateTime?
-  lastLoginAt   DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  tenantId     String
+  email        String
+  name         String
+  role         Role
+  passwordHash String
+  invitedAt    DateTime?
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+  employees     Employee[]
 
   @@unique([tenantId, email], map: "user_email_per_tenant_unique")
   @@index([tenantId], map: "user_tenant_idx")
@@ -54,7 +57,7 @@ model Department {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employees Employee[]
 
   @@unique([tenantId, name], map: "dept_name_per_tenant_unique")
@@ -62,21 +65,21 @@ model Department {
 }
 
 model Employee {
-  id           String     @id @default(uuid())
+  id           String    @id @default(uuid())
   tenantId     String
-  userId       String?
+  userId       String?   @unique
   departmentId String?
   firstName    String
   lastName     String
   email        String
   position     String?
   hiredAt      DateTime?
-  status       String      @default("ACTIVE")
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  status       String    @default("ACTIVE")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   department Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
 
   @@unique([tenantId, email], map: "employee_email_per_tenant_unique")
@@ -85,16 +88,16 @@ model Employee {
 }
 
 model FileObject {
-  id             String   @id @default(uuid())
-  tenantId       String
-  bucket         String
-  objectKey      String
-  sizeBytes      Int
-  contentType    String
-  sha256         String?
-  metadata       Json?
+  id              String   @id @default(uuid())
+  tenantId        String
+  bucket          String
+  objectKey       String
+  sizeBytes       Int
+  contentType     String
+  sha256          String?
+  metadata        Json?
   createdByUserId String?
-  createdAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -119,4 +122,19 @@ model AuditLog {
 
   @@index([tenantId], map: "audit_tenant_idx")
   @@index([tenantId, entity], map: "audit_entity_idx")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String
+  token     String   @unique
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, userId])
 }

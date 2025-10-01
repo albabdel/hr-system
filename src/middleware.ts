@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -5,13 +6,13 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get("vrs_token")?.value;
   const path = req.nextUrl.pathname;
 
-  const isPublicApi = path.startsWith('/api/auth/');
-  const isPublicPage = path.startsWith('/login') || path.startsWith('/register');
+  const isPublicApi = path.startsWith('/api/auth/') || path.startsWith('/api/public/');
+  const isPublicPage = path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/careers');
   
   // Allow public API routes and pages to be accessed without a token
   if (isPublicApi || isPublicPage) {
     // If user is logged in and tries to access login/register, redirect to dashboard
-    if (token && isPublicPage) {
+    if (token && (path.startsWith('/login') || path.startsWith('/register'))) {
       const url = req.nextUrl.clone();
       url.pathname = '/dashboard';
       return NextResponse.redirect(url);
@@ -30,4 +31,4 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/((?!_next|api/public|public|favicon.ico).*)"] };
+export const config = { matcher: ["/((?!_next|public|favicon.ico).*)"] };

@@ -8,6 +8,7 @@ const JobSchema = new Schema({
   employmentType: { type: String, enum: ["Full-time","Part-time","Contract","Intern"], default: "Full-time" },
   description: String,
   status: { type: String, enum: ["OPEN","PAUSED","CLOSED"], default: "OPEN", index: true },
+  isPublic: { type: Boolean, default: true, index: true },
 }, { timestamps: true });
 JobSchema.index({ tenantId: 1, status: 1, createdAt: -1 });
 export default models.Job || model("Job", JobSchema);

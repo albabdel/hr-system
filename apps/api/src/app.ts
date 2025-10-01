@@ -10,6 +10,10 @@ import probeRouter from './routes/probe.js';
 import employeesRouter from './routes/employees.js';
 import filesRouter from './routes/files.js';
 import empDocsRouter from './routes/employee-documents.js';
+import timeClockRouter from './routes/timeclock.js';
+import leaveTypesRouter from './routes/leave-types.js';
+import leaveRequestsRouter from './routes/leave-requests.js';
+import holidaysRouter from './routes/holidays.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -31,6 +35,10 @@ export function createApp() {
   app.use('/v1/employees', employeesRouter);
   app.use('/v1/files', filesRouter);
   app.use('/v1/employees', empDocsRouter);
+  app.use('/v1/time/clock', timeClockRouter);
+  app.use('/v1/leave', leaveTypesRouter);
+  app.use('/v1/leave', leaveRequestsRouter);
+  app.use('/v1/holidays', holidaysRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

@@ -27,10 +27,15 @@ model Tenant {
   auditLogs     AuditLog[]
   refreshTokens RefreshToken[]
   employeeDocs  EmployeeDocument[]
+  // New
+  timeClocks    TimeClock[]
+  leaveTypes    LeaveType[]
+  leaveRequests LeaveRequest[]
+  holidays      HolidayCalendar[]
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String        @id @default(uuid())
   tenantId      String
   email         String
   name          String
@@ -38,10 +43,13 @@ model User {
   passwordHash  String
   invitedAt     DateTime?
   lastLoginAt   DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   refreshTokens RefreshToken[]
+  timeClocks    TimeClock[]
+  leaveRequests LeaveRequest[]
+
   @@unique([tenantId, email], map: "user_email_per_tenant_unique")
   @@index([tenantId], map: "user_tenant_idx")
 }
@@ -55,6 +63,7 @@ model Department {
   updatedAt DateTime @updatedAt
   tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employees Employee[]
+
   @@unique([tenantId, name], map: "dept_name_per_tenant_unique")
   @@index([tenantId], map: "dept_tenant_idx")
 }
@@ -69,13 +78,14 @@ model Employee {
   email        String
   position     String?
   hiredAt      DateTime?
-  status       String      @default("ACTIVE")
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  status       String     @default("ACTIVE")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   tenant       Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   user         User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   documents    EmployeeDocument[]
+
   @@unique([tenantId, email], map: "employee_email_per_tenant_unique")
   @@index([tenantId], map: "employee_tenant_idx")
   @@index([tenantId, departmentId], map: "employee_dept_idx")
@@ -94,6 +104,7 @@ model FileObject {
   createdAt       DateTime @default(now())
   tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employeeLinks   EmployeeDocument[]
+
   @@index([tenantId], map: "file_tenant_idx")
   @@unique([tenantId, bucket, objectKey], map: "file_unique_per_tenant")
 }
@@ -111,20 +122,22 @@ model AuditLog {
   userAgent   String?
   createdAt   DateTime @default(now())
   tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@index([tenantId], map: "audit_tenant_idx")
   @@index([tenantId, entity], map: "audit_entity_idx")
 }
 
 model RefreshToken {
-  id         String   @id @default(uuid())
-  tenantId   String
-  userId     String
-  token      String   @unique
-  revoked    Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  expiresAt  DateTime
-  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String
+  token     String   @unique
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([tenantId, userId])
 }
 
@@ -135,11 +148,86 @@ model EmployeeDocument {
   fileId     String
   title      String?
   createdAt  DateTime @default(now())
-
-  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  file     FileObject @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  file       FileObject @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, employeeId])
   @@index([tenantId, fileId])
+}
+
+// New models
+model TimeClock {
+  id        String    @id @default(uuid())
+  tenantId  String
+  userId    String
+  clockIn   DateTime
+  clockOut  DateTime?
+  durationM Int?      // minutes
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, userId, clockIn])
+  @@index([tenantId, userId, clockOut])
+}
+
+model LeaveType {
+  id               String   @id @default(uuid())
+  tenantId         String
+  name             String
+  code             String
+  daysPerYear      Float    @default(20)
+  allowHalfDays    Boolean  @default(true)
+  allowOnHolidays  Boolean  @default(false)
+  requiresApproval Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leaveRequests    LeaveRequest[]
+
+  @@unique([tenantId, code], map: "leavetype_code_per_tenant")
+  @@index([tenantId, name])
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELED
+}
+
+model LeaveRequest {
+  id         String      @id @default(uuid())
+  tenantId   String
+  userId     String
+  typeId     String
+  startDate  DateTime
+  endDate    DateTime
+  hours      Float? // optional for partial days
+  status     LeaveStatus @default(PENDING)
+  reason     String?
+  approverId String?
+  decidedAt  DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       LeaveType   @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, userId, startDate, endDate])
+  @@index([tenantId, status])
+}
+
+model HolidayCalendar {
+  id        String   @id @default(uuid())
+  tenantId  String
+  date      DateTime @db.Date
+  name      String
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, date], map: "holiday_unique_per_day")
+  @@index([tenantId, date])
 }

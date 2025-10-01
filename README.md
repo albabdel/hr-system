@@ -1,35 +1,33 @@
-# HR SaaS (Stage 8)
-Files + signed URLs + employee documents.
+# HR SaaS (Stage 9)
+Time & Attendance, Leave Types & Requests, Holiday Calendar.
 
-## New endpoints
-- `POST /v1/files/sign-upload` → `{ uploadUrl, fileId, objectKey }`
-- `GET /v1/files/:id/signed-url` → `{ url, contentType, filename }`
-- `POST /v1/employees/:id/documents` → attach file to employee
-- `GET /v1/employees/:id/documents` → list attachments
+## Endpoints
 
-## Env
-Set in `apps/api/.env` or docker-compose:
-```
-STORAGE_ENDPOINT=http://localhost:9000
-STORAGE_REGION=us-east-1
-STORAGE_ACCESS_KEY=minio
-STORAGE_SECRET_KEY=minio123
-STORAGE_BUCKET=hr-dev
-STORAGE_USE_TLS=false
-```
+### Time Clock
+- `POST /v1/time/clock/in`
+- `POST /v1/time/clock/out`
+- `GET /v1/time/clock/me?from&to`
 
-## Dev quickstart
-```bash
-pnpm i
-pnpm --filter @hr/api prisma:migrate --name employee_documents
-docker compose up -d
-pnpm --filter @hr/api dev
-```
+### Leave
+- `GET  /v1/leave/types`
+- `POST /v1/leave/types`
+- `PATCH /v1/leave/types/:id`
+- `DELETE /v1/leave/types/:id`
+- `GET  /v1/leave/requests?userId?status?from?to`
+- `POST /v1/leave/requests`
+- `POST /v1/leave/requests/:id/approve`
+- `POST /v1/leave/requests/:id/reject`
+- `POST /v1/leave/requests/:id/cancel`
 
-## Upload flow
-1) Call `POST /v1/files/sign-upload` with filename, contentType, sizeBytes.
-2) PUT the bytes to `uploadUrl` with `Content-Type` header.
-3) `POST /v1/employees/:id/documents` with `fileId` to link file.
-4) Get a viewer URL: `GET /v1/files/:id/signed-url`.
+### Holidays
+- `GET  /v1/holidays`
+- `POST /v1/holidays`
+- `DELETE /v1/holidays/:id`
 
-Worker logs mark file as scanned (stub). Real scanning can replace it later.
+## Notes
+- RLS enforced by setting `app.tenant_id` in every transaction.
+- RBAC:
+  - Employees clock themselves; create/read/cancel their own leave.
+  - Managers/HR/Owner can read tenant-wide and approve/reject.
+  - HR/Owner manage leave types and holidays.
+- Basic overlap and holiday validation included.

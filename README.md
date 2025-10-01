@@ -1,5 +1,20 @@
-# Firebase Studio
+# VRS SaaS
 
-This is a NextJS starter in Firebase Studio.
+A multi-tenant HR SaaS application.
 
-To get started, take a look at src/app/page.tsx.
+## Structure
+
+- `apps/api`: Express.js backend
+- `apps/web`: React (Vite) frontend
+- `apps/worker`: BullMQ job processor
+- `packages/ui`: Shared React components (shadcn/ui)
+- `packages/config`: ESLint, Prettier, TSConfig configurations
+- `packages/types`: Shared types and Zod schemas
+
+## Development
+
+To run all applications in development mode:
+
+```sh
+pnpm dev
+```

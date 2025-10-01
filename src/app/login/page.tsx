@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { safeJson } from "@/lib/safeJson";
 
 export default function LoginPage() {
   const r = useRouter();
@@ -24,11 +25,8 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      // defensive parse (prevents UI crashes on bad responses)
-      const text = await res.text();
-      let data:any = null;
-      try { data = JSON.parse(text); } catch { data = { error:{ message: text.slice(0,200) } }; }
-      if (!res.ok) throw new Error(data?.error?.message || "Login failed");
+      const { data, text } = await safeJson(res);
+      if (!res.ok) throw new Error(data?.error?.message || text || "Login failed");
       
       r.replace("/setup"); // will redirect to /dashboard if already completed
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }

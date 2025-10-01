@@ -1,6 +1,6 @@
 {
   "name": "@hr/api",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,8 +18,11 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.1.1",
+    "@aws-sdk/client-s3": "^3.666.0",
+    "@aws-sdk/s3-request-presigner": "^3.666.0",
     "@prisma/client": "^5.18.0",
     "bcrypt": "^5.1.1",
+    "bullmq": "^5.10.3",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",

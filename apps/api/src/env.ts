@@ -8,6 +8,12 @@ const EnvSchema = z.object({
   APP_URL: z.string().url(),
   API_URL: z.string().url(),
   PORT: z.string().regex(/^\d+$/).transform(Number).optional(),
+  STORAGE_ENDPOINT: z.string().url(),
+  STORAGE_REGION: z.string().min(2),
+  STORAGE_ACCESS_KEY: z.string().min(1),
+  STORAGE_SECRET_KEY: z.string().min(1),
+  STORAGE_BUCKET: z.string().min(1),
+  STORAGE_USE_TLS: z.enum(['true','false']).default('false'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

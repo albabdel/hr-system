@@ -15,36 +15,33 @@ enum Role {
 }
 
 model Tenant {
-  id        String   @id @default(uuid())
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id            String           @id @default(uuid())
+  name          String
+  slug          String           @unique
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   users         User[]
   departments   Department[]
   employees     Employee[]
   files         FileObject[]
   auditLogs     AuditLog[]
   refreshTokens RefreshToken[]
+  employeeDocs  EmployeeDocument[]
 }
 
 model User {
-  id           String   @id @default(uuid())
-  tenantId     String
-  email        String
-  name         String
-  role         Role
-  passwordHash String
-  invitedAt    DateTime?
-  lastLoginAt  DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id            String   @id @default(uuid())
+  tenantId      String
+  email         String
+  name          String
+  role          Role
+  passwordHash  String
+  invitedAt     DateTime?
+  lastLoginAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   refreshTokens RefreshToken[]
-  employees     Employee[]
-
   @@unique([tenantId, email], map: "user_email_per_tenant_unique")
   @@index([tenantId], map: "user_tenant_idx")
 }
@@ -56,32 +53,29 @@ model Department {
   code      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employees Employee[]
-
   @@unique([tenantId, name], map: "dept_name_per_tenant_unique")
   @@index([tenantId], map: "dept_tenant_idx")
 }
 
 model Employee {
-  id           String    @id @default(uuid())
+  id           String     @id @default(uuid())
   tenantId     String
-  userId       String?   @unique
+  userId       String?
   departmentId String?
   firstName    String
   lastName     String
   email        String
   position     String?
   hiredAt      DateTime?
-  status       String    @default("ACTIVE")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  department Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-
+  status       String      @default("ACTIVE")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  tenant       Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user         User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  documents    EmployeeDocument[]
   @@unique([tenantId, email], map: "employee_email_per_tenant_unique")
   @@index([tenantId], map: "employee_tenant_idx")
   @@index([tenantId, departmentId], map: "employee_dept_idx")
@@ -98,9 +92,8 @@ model FileObject {
   metadata        Json?
   createdByUserId String?
   createdAt       DateTime @default(now())
-
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employeeLinks   EmployeeDocument[]
   @@index([tenantId], map: "file_tenant_idx")
   @@unique([tenantId, bucket, objectKey], map: "file_unique_per_tenant")
 }
@@ -117,24 +110,36 @@ model AuditLog {
   ip          String?
   userAgent   String?
   createdAt   DateTime @default(now())
-
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   @@index([tenantId], map: "audit_tenant_idx")
   @@index([tenantId, entity], map: "audit_entity_idx")
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  tenantId  String
-  userId    String
-  token     String   @unique
-  revoked   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  expiresAt DateTime
-
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id         String   @id @default(uuid())
+  tenantId   String
+  userId     String
+  token      String   @unique
+  revoked    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([tenantId, userId])
+}
+
+model EmployeeDocument {
+  id         String   @id @default(uuid())
+  tenantId   String
+  employeeId String
+  fileId     String
+  title      String?
+  createdAt  DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  file     FileObject @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, employeeId])
+  @@index([tenantId, fileId])
 }

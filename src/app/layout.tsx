@@ -21,16 +21,15 @@ function ThemeLoader() {
         __html: `
           (async function(){
             try{
-              // Only try if a session cookie exists
               if (document.cookie.indexOf('vrs_token=') === -1) return;
               const r = await fetch('/api/tenant/status', { credentials: 'include' });
               if (!r.ok) return;
-              const ct = r.headers.get('content-type') || '';
+              const ct = r.headers.get('content-type')||'';
               if (!ct.includes('application/json')) return;
               const s = await r.json();
               if (s?.theme?.primary) document.documentElement.style.setProperty('--brand', s.theme.primary);
-              if (s?.theme?.logoUrl) document.documentElement.style.setProperty('--logo-url', 'url('+s.theme.logoUrl+')');
-            } catch (_) {}
+              if (s?.theme?.logoUrl) document.documentElement.style.setProperty('--logo-url','url('+s.theme.logoUrl+')');
+            } catch(_) {}
           })();
         `,
       }}

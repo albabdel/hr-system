@@ -4,29 +4,35 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // 1) Always let API traffic through (prevents HTML redirects on JSON endpoints)
+  // 1) Always bypass APIs (avoid HTML on JSON)
   if (path.startsWith("/api/")) return NextResponse.next();
 
-  // 2) Public, no-login pages
+  // 2) Always bypass Next.js static assets and public files
+  if (
+    path.startsWith("/_next/") ||
+    path.startsWith("/static/") ||
+    path.startsWith("/images/") ||
+    path.startsWith("/assets/") ||
+    path === "/favicon.ico" ||
+    path === "/robots.txt" ||
+    path === "/sitemap.xml"
+  ) return NextResponse.next();
+
+  // 3) Public pages
   const isPublicPage =
     path.startsWith("/login") ||
     path.startsWith("/register") ||
     path.startsWith("/careers") ||
-    path.startsWith("/offer/"); // public signing links
-
-  // 3) Static/assets
-  if (path.startsWith("/_next") || path === "/favicon.ico") return NextResponse.next();
+    path.startsWith("/offer/");
 
   const token = req.cookies.get("vrs_token")?.value;
 
-  // 4) Redirect unauthenticated page requests to login
   if (!token && !isPublicPage) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // 5) Authenticated users shouldn’t see auth pages
   if (token && (path.startsWith("/login") || path.startsWith("/register"))) {
     const url = req.nextUrl.clone();
     url.pathname = "/dashboard";
@@ -36,7 +42,9 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// Keep this matcher broad; the early return above handles /api/*
+// IMPORTANT: exclude assets at the matcher level too
 export const config = {
-  matcher: ["/((?!public).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|_next/webpack-hmr|static|images|assets|favicon.ico|robots.txt|sitemap.xml).*)",
+  ],
 };

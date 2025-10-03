@@ -1,3 +1,4 @@
+
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -14,13 +15,13 @@ import timeClockRouter from './routes/timeclock.js';
 import leaveTypesRouter from './routes/leave-types.js';
 import leaveRequestsRouter from './routes/leave-requests.js';
 import holidaysRouter from './routes/holidays.js';
-import lmsRouter from './routes/lms.js';
 import payrollCalendarsRouter from './routes/payroll-calendars.js';
 import payrollRunsRouter from './routes/payroll-runs.js';
 import payslipsRouter from './routes/payslips.js';
 import analyticsRouter from './routes/analytics.js';
 import billingRouter from './routes/billing.js';
 import stripeWebhook from './routes/webhooks/stripe.js';
+import integrationsRouter from './routes/integrations.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -28,7 +29,6 @@ export function createApp() {
   const app = express();
   const log = pino({ name: 'api', level: process.env.NODE_ENV === 'test' ? 'silent' : 'info' });
 
-  // Stripe webhook needs raw body, so mount it BEFORE json middleware.
   app.use(stripeWebhook);
 
   app.use(helmet());
@@ -49,12 +49,13 @@ export function createApp() {
   app.use('/v1/leave', leaveTypesRouter);
   app.use('/v1/leave', leaveRequestsRouter);
   app.use('/v1/holidays', holidaysRouter);
-  app.use('/v1/lms', lmsRouter);
+  app.use('/v1/lms', (await import('./routes/lms.js')).default);
   app.use('/v1/payroll', payrollCalendarsRouter);
   app.use('/v1/payroll', payrollRunsRouter);
   app.use('/v1/payslips', payslipsRouter);
   app.use('/v1/analytics', analyticsRouter);
   app.use('/v1/billing', billingRouter);
+  app.use('/v1/integrations', integrationsRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

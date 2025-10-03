@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,6 +13,9 @@ enum PayrollRunStatus { DRAFT REVIEW APPROVED FINALIZED }
 enum ExportJobStatus { QUEUED RUNNING DONE ERROR }
 enum PlanCode { BASIC PRO ENTERPRISE }
 enum SubscriptionStatus { INCOMPLETE TRIALING ACTIVE PAST_DUE CANCELED UNPAID }
+enum IntegrationType { SLACK_WEBHOOK TEAMS_WEBHOOK SMTP }
+enum NotificationChannel { SLACK TEAMS EMAIL }
+enum NotificationStatus { QUEUED SENT FAILED }
 
 model Tenant {
   id            String           @id @default(uuid())
@@ -35,6 +39,8 @@ model Tenant {
   payslips         Payslip[]
   exportJobs       ExportJob[]
   subscription     BillingSubscription?
+  integrations     Integration[]
+  notifications    NotificationLog[]
 }
 
 model User {
@@ -297,4 +303,34 @@ model BillingSubscription {
   updatedAt            DateTime           @updatedAt
   tenant               Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   @@index([status])
+}
+
+model Integration {
+  id         String          @id @default(uuid())
+  tenantId   String
+  type       IntegrationType
+  name       String
+  isEnabled  Boolean         @default(true)
+  config     Json
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  tenant     Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  @@unique([tenantId, type], map: "integration_one_per_type_per_tenant")
+  @@index([tenantId, type])
+}
+
+model NotificationLog {
+  id         String              @id @default(uuid())
+  tenantId   String
+  channel    NotificationChannel
+  status     NotificationStatus  @default(QUEUED)
+  target     String?
+  subject    String?
+  body       String?
+  error      String?
+  attempts   Int                 @default(0)
+  createdAt  DateTime            @default(now())
+  deliveredAt DateTime?
+  tenant     Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  @@index([tenantId, channel, status])
 }

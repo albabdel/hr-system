@@ -1,8 +1,11 @@
+
 import { Worker, QueueEvents } from 'bullmq';
 import Redis from 'ioredis';
 import { PrismaClient } from '@prisma/client';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import PDFDocument from 'pdfkit';
+import axios from 'axios';
+import nodemailer from 'nodemailer';
 
 const connection = { host: process.env.REDIS_URL || 'redis', port: 6379 };
 const prisma = new PrismaClient();
@@ -13,9 +16,10 @@ const s3 = new S3Client({
   credentials: { accessKeyId: process.env.STORAGE_ACCESS_KEY || 'minio', secretAccessKey: process.env.STORAGE_SECRET_KEY || 'minio123' }
 });
 const BUCKET = process.env.STORAGE_BUCKET || 'hr-dev';
+const isTest = process.env.NODE_ENV === 'test';
 
 
-const redis = new Redis(connection.url);
+const redis = new Redis(connection.host);
 redis.ping().then((p) => console.log(`Worker connected to Redis: ${p}`));
 
 new Worker('fileScan', async (job) => {
@@ -58,7 +62,6 @@ new Worker('certGen', async (job) => {
     console.log(`Generated certificate for job ${job.id}`);
 }, { connection });
 
-// NEW: analyticsRefresh — refresh materialized views
 new Worker('analyticsRefresh', async (job) => {
   const { tenantId } = job.data as { tenantId: string };
   await prisma.$executeRawUnsafe(`REFRESH MATERIALIZED VIEW mv_headcount_daily`);
@@ -66,7 +69,6 @@ new Worker('analyticsRefresh', async (job) => {
   console.log(`Analytics refreshed for tenant ${tenantId}`);
 }, { connection });
 
-// NEW: analyticsExport — build CSV and upload
 new Worker('analyticsExport', async (job) => {
   const { tenantId, jobId } = job.data as { tenantId: string; jobId: string };
   await prisma.$executeRawUnsafe(`SELECT set_config('app.tenant_id',$1,true)`, tenantId);
@@ -122,6 +124,55 @@ new Worker('analyticsExport', async (job) => {
 }, { connection });
 
 
+new Worker('notify', async (job) => {
+  const { tenantId, channel, subject, body, emailTo } = job.data as {
+    tenantId: string;
+    channel: 'SLACK'|'TEAMS'|'EMAIL';
+    subject?: string;
+    body: string;
+    emailTo?: string;
+  };
+
+  await prisma.$executeRawUnsafe(`SELECT set_config('app.tenant_id',$1,true)`, tenantId);
+
+  try {
+    if (channel === 'SLACK') {
+      const i = await prisma.integration.findUnique({ where: { tenantId_type: { tenantId, type: 'SLACK_WEBHOOK' } } });
+      if (!i?.isEnabled) throw new Error('Slack not configured');
+      if (!isTest) await axios.post(String((i.config as any).webhookUrl), { text: body });
+      await prisma.notificationLog.create({ data: { tenantId, channel: 'SLACK', status: 'SENT', target: 'slack', subject: subject || null, body, attempts: 1, deliveredAt: new Date() } });
+    } else if (channel === 'TEAMS') {
+      const i = await prisma.integration.findUnique({ where: { tenantId_type: { tenantId, type: 'TEAMS_WEBHOOK' } } });
+      if (!i?.isEnabled) throw new Error('Teams not configured');
+      if (!isTest) await axios.post(String((i.config as any).webhookUrl), { text: body });
+      await prisma.notificationLog.create({ data: { tenantId, channel: 'TEAMS', status: 'SENT', target: 'teams', subject: subject || null, body, attempts: 1, deliveredAt: new Date() } });
+    } else {
+      const i = await prisma.integration.findUnique({ where: { tenantId_type: { tenantId, type: 'SMTP' } } });
+      if (!i?.isEnabled && !isTest) throw new Error('SMTP not configured');
+      if (!isTest) {
+        const cfg = (i?.config || {}) as any;
+        const transporter = nodemailer.createTransport({
+          host: cfg.host || process.env.SMTP_HOST || 'localhost',
+          port: Number(cfg.port || process.env.SMTP_PORT || 1025),
+          secure: Boolean(cfg.secure || false),
+          auth: cfg.user && cfg.pass ? { user: cfg.user, pass: cfg.pass } : undefined
+        });
+        await transporter.sendMail({
+          from: `"${cfg.fromName || 'HR'}" <${cfg.fromEmail || 'hr@example.com'}>`,
+          to: emailTo || 'test@example.com',
+          subject: subject || 'Notification',
+          text: body
+        });
+      }
+      await prisma.notificationLog.create({ data: { tenantId, channel: 'EMAIL', status: 'SENT', target: emailTo || 'test@example.com', subject: subject || 'Notification', body, attempts: 1, deliveredAt: new Date() } });
+    }
+  } catch (e: any) {
+    await prisma.notificationLog.create({ data: { tenantId, channel: channel as any, status: 'FAILED', target: channel.toLowerCase(), subject: subject || null, body, error: e.message, attempts: (job.attemptsMade || 0) + 1 } });
+    throw e;
+  }
+}, { connection });
+
+
 const eventsFileScan = new QueueEvents('fileScan', { connection });
 eventsFileScan.on('completed', ({ jobId }) => console.log(`fileScan completed: ${jobId}`));
 eventsFileScan.on('failed', ({ jobId, failedReason }) => console.error(`fileScan failed: ${jobId} ${failedReason}`));
@@ -137,6 +188,10 @@ eventsPayrollCalc.on('failed', ({ jobId, failedReason }) => console.error(`payro
 const eventsAnalytics = new QueueEvents('analyticsExport', { connection });
 eventsAnalytics.on('completed', ({ jobId }) => console.log(`analyticsExport completed: ${jobId}`));
 eventsAnalytics.on('failed', ({ jobId, failedReason }) => console.error(`analyticsExport failed: ${jobId} ${failedReason}`));
+
+const eventsNotify = new QueueEvents('notify', { connection });
+eventsNotify.on('completed', ({ jobId }) => console.log(`notify completed: ${jobId}`));
+eventsNotify.on('failed', ({ jobId, failedReason }) => console.error(`notify failed: ${jobId} ${failedReason}`));
 
 
 console.log('Worker is listening for jobs...');

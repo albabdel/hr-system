@@ -1,6 +1,7 @@
+
 {
   "name": "@hr/api",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,6 +21,7 @@
     "@aws-sdk/client-s3": "^3.666.0",
     "@aws-sdk/s3-request-presigner": "^3.666.0",
     "@prisma/client": "^5.18.0",
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.10.3",
     "cors": "^2.8.5",
@@ -27,6 +29,7 @@
     "express-rate-limit": "^7.3.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.14",
     "pino": "^9.4.0",
     "stripe": "^16.6.0",
     "swagger-ui-express": "^5.0.1",
@@ -38,6 +41,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.30",
+    "@types/nodemailer": "^6.4.15",
     "@types/supertest": "^2.0.16",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",

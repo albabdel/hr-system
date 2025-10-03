@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { getAuth, clearAuth } from "../lib/auth";
@@ -19,6 +20,8 @@ export function AppLayout() {
           {link("/employees", "Employees")}
           {link("/lms", "LMS")}
           {link("/analytics", "Analytics")}
+          <div className="pt-2 text-gray-500 text-xs uppercase">Settings</div>
+          {link("/settings/integrations", "Integrations")}
         </nav>
       </aside>
       <main className="p-6">

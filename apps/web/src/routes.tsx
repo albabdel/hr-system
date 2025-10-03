@@ -1,3 +1,4 @@
+
 import React from "react";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import Login from "./screens/Login";
@@ -9,6 +10,7 @@ import LmsCoursesList from "./screens/lms/LmsCoursesList";
 import LmsCourseDetail from "./screens/lms/LmsCourseDetail";
 import LmsLesson from "./screens/lms/LmsLesson";
 import Analytics from "./screens/analytics/Analytics";
+import Integrations from "./screens/integrations/Integrations";
 import { isAuthed } from "./lib/auth";
 
 function guard() {
@@ -30,7 +32,8 @@ export const router = createBrowserRouter([
       { path: "/lms", element: <LmsCoursesList /> },
       { path: "/lms/courses/:id", element: <LmsCourseDetail /> },
       { path: "/lms/lessons/:id", element: <LmsLesson /> },
-      { path: "/analytics", element: <Analytics /> }
+      { path: "/analytics", element: <Analytics /> },
+      { path: "/settings/integrations", element: <Integrations /> }
     ],
   },
 ]);

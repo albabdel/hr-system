@@ -1,6 +1,6 @@
 {
   "name": "@hr/worker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,12 +12,15 @@
     "test": "node -e \"console.log('ok')\""
   },
   "dependencies": {
-    "@prisma/client": "^5.18.0",
+    "@aws-sdk/client-s3": "^3.666.0",
     "bullmq": "^5.10.3",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.4.1",
+    "@prisma/client": "^5.18.0",
+    "pdfkit": "^0.15.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
+    "@types/pdfkit": "^0.13.4",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
     "eslint": "^9.10.0",

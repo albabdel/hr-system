@@ -1,3 +1,4 @@
+// (full file with new payroll models)
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,6 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 enum Role { OWNER HR_ADMIN MANAGER EMPLOYEE }
 
 model Tenant {
@@ -24,14 +26,10 @@ model Tenant {
   leaveTypes    LeaveType[]
   leaveRequests LeaveRequest[]
   holidays      HolidayCalendar[]
-  // LMS
-  courses       Course[]
-  modules       Module[]
-  lessons       Lesson[]
-  quizQuestions QuizQuestion[]
-  enrollments   EnrollmentLms[]
-  attempts      Attempt[]
-  certificates  Certificate[]
+  // Payroll
+  payrollCalendars PayrollCalendar[]
+  payrollRuns      PayrollRun[]
+  payslips         Payslip[]
 }
 
 model User {
@@ -46,9 +44,10 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  createdCourses Course[]
-  enrollments   EnrollmentLms[]
-  attempts      Attempt[]
+  refreshTokens RefreshToken[]
+  timeClocks    TimeClock[]
+  leaveRequests LeaveRequest[]
+  employees     Employee[]
   @@unique([tenantId, email], map: "user_email_per_tenant_unique")
   @@index([tenantId], map: "user_tenant_idx")
 }
@@ -83,6 +82,7 @@ model Employee {
   user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   documents    EmployeeDocument[]
+  payslips     Payslip[]
   @@unique([tenantId, email], map: "employee_email_per_tenant_unique")
   @@index([tenantId], map: "employee_tenant_idx")
   @@index([tenantId, departmentId], map: "employee_dept_idx")
@@ -101,6 +101,7 @@ model FileObject {
   createdAt       DateTime @default(now())
   tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employeeLinks   EmployeeDocument[]
+  payslipPdfOf    Payslip[]
   @@index([tenantId], map: "file_tenant_idx")
   @@unique([tenantId, bucket, objectKey], map: "file_unique_per_tenant")
 }
@@ -158,8 +159,10 @@ model TimeClock {
   durationM Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([tenantId, userId, clockIn])
   @@index([tenantId, userId, clockOut])
 }
@@ -175,7 +178,10 @@ model LeaveType {
   requiresApproval Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leaveRequests LeaveRequest[]
+
   @@unique([tenantId, code], map: "leavetype_code_per_tenant")
   @@index([tenantId, name])
 }
@@ -196,9 +202,9 @@ model LeaveRequest {
   decidedAt   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        LeaveType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type     LeaveType @relation(fields: [typeId], references: [id], onDelete: Cascade)
   @@index([tenantId, userId, startDate, endDate])
   @@index([tenantId, status])
 }
@@ -206,32 +212,82 @@ model LeaveRequest {
 model HolidayCalendar {
   id        String   @id @default(uuid())
   tenantId  String
-  date      DateTime @db.Date
+  date      DateTime
   name      String
   createdAt DateTime @default(now())
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   @@unique([tenantId, date], map: "holiday_unique_per_day")
   @@index([tenantId, date])
 }
 
-// LMS Models
-enum LessonType { video text quiz }
-enum EnrollmentStatus { enrolled completed }
+// Payroll models
+enum PayrollFrequency { MONTHLY BIWEEKLY WEEKLY CUSTOM }
+enum PayrollRunStatus { DRAFT REVIEW APPROVED FINALIZED }
 
-model Course {
-  id              String          @id @default(uuid())
-  tenantId        String
-  title           String
-  description     String?
-  createdByUserId String
-  createdAt       DateTime        @default(now())
-  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  creator         User            @relation(fields: [createdByUserId], references: [id])
-  modules         Module[]
-  enrollments     EnrollmentLms[]
-  @@index([tenantId])
+model PayrollCalendar {
+  id         String           @id @default(uuid())
+  tenantId   String
+  name       String
+  frequency  PayrollFrequency
+  dayOfMonth Int?
+  cutoffOffsetDays Int? // e.g. -3 days before period end
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  runs       PayrollRun[]
+  @@index([tenantId, name])
 }
 
+model PayrollRun {
+  id          String            @id @default(uuid())
+  tenantId    String
+  calendarId  String
+  periodStart DateTime
+  periodEnd   DateTime
+  status      PayrollRunStatus  @default(DRAFT)
+  totals      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  calendar    PayrollCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  payslips    Payslip[]
+  @@index([tenantId, status])
+  @@index([tenantId, periodStart, periodEnd])
+}
+
+model Payslip {
+  id         String   @id @default(uuid())
+  tenantId   String
+  runId      String
+  employeeId String
+  currency   String   @default("USD")
+  gross      Decimal  @default(0)
+  taxes      Decimal  @default(0)
+  net        Decimal  @default(0)
+  pdfFileId  String?  @unique
+  createdAt  DateTime @default(now())
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  run        PayrollRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  pdfFile    FileObject? @relation(fields: [pdfFileId], references: [id], onDelete: SetNull)
+  @@index([tenantId, runId])
+  @@index([tenantId, employeeId])
+}
+
+// LMS Models
+model Course {
+  id            String   @id @default(uuid())
+  tenantId      String
+  title         String
+  description   String?
+  createdByUserId String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  modules       Module[]
+  enrollments   EnrollmentLms[]
+  @@index([tenantId])
+}
 model Module {
   id         String   @id @default(uuid())
   tenantId   String
@@ -239,28 +295,29 @@ model Module {
   title      String
   orderIndex Int
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessons    Lesson[]
   @@index([tenantId, courseId])
 }
-
+enum LessonType { video text quiz }
 model Lesson {
-  id         String       @id @default(uuid())
+  id         String     @id @default(uuid())
   tenantId   String
   moduleId   String
   title      String
   type       LessonType
   content    Json?
   orderIndex Int
-  createdAt  DateTime     @default(now())
-  tenant     Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  module     Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  questions  QuizQuestion[]
-  attempts   Attempt[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  module     Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  quizQuestions QuizQuestion[]
+  attempts      Attempt[]
   @@index([tenantId, moduleId])
 }
-
 model QuizQuestion {
   id             String   @id @default(uuid())
   tenantId       String
@@ -268,11 +325,12 @@ model QuizQuestion {
   questionText   String
   options        Json
   correctAnswers Json
+  createdAt      DateTime @default(now())
   tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   lesson         Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   @@index([tenantId, lessonId])
 }
-
+enum EnrollmentStatus { enrolled completed }
 model EnrollmentLms {
   id          String           @id @default(uuid())
   tenantId    String
@@ -281,33 +339,32 @@ model EnrollmentLms {
   status      EnrollmentStatus @default(enrolled)
   startedAt   DateTime         @default(now())
   completedAt DateTime?
+  createdAt   DateTime         @default(now())
   tenant      Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   certificate Certificate?
   @@unique([tenantId, courseId, userId])
 }
-
 model Attempt {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   tenantId    String
   lessonId    String
   userId      String
-  score       Float?
-  answers     Json?
-  startedAt   DateTime  @default(now())
-  completedAt DateTime?
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers     Json
+  score       Float
+  completedAt DateTime
+  createdAt   DateTime @default(now())
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([tenantId, lessonId, userId])
 }
-
 model Certificate {
   id           String        @id @default(uuid())
   tenantId     String
   enrollmentId String        @unique
-  url          String?
+  url          String
   issuedAt     DateTime      @default(now())
   tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   enrollment   EnrollmentLms @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)

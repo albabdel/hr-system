@@ -15,6 +15,9 @@ import leaveTypesRouter from './routes/leave-types.js';
 import leaveRequestsRouter from './routes/leave-requests.js';
 import holidaysRouter from './routes/holidays.js';
 import lmsRouter from './routes/lms.js';
+import payrollCalendarsRouter from './routes/payroll-calendars.js';
+import payrollRunsRouter from './routes/payroll-runs.js';
+import payslipsRouter from './routes/payslips.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -41,6 +44,9 @@ export function createApp() {
   app.use('/v1/leave', leaveRequestsRouter);
   app.use('/v1/holidays', holidaysRouter);
   app.use('/v1/lms', lmsRouter);
+  app.use('/v1/payroll', payrollCalendarsRouter);
+  app.use('/v1/payroll', payrollRunsRouter);
+  app.use('/v1/payslips', payslipsRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

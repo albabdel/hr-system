@@ -1,33 +1,39 @@
-# HR SaaS (Stage 9)
-Time & Attendance, Leave Types & Requests, Holiday Calendar.
+# HR SaaS (Stage 11)
+Payroll core: calendars, runs, payslips, PDF stub.
 
 ## Endpoints
-
-### Time Clock
-- `POST /v1/time/clock/in`
-- `POST /v1/time/clock/out`
-- `GET /v1/time/clock/me?from&to`
-
-### Leave
-- `GET  /v1/leave/types`
-- `POST /v1/leave/types`
-- `PATCH /v1/leave/types/:id`
-- `DELETE /v1/leave/types/:id`
-- `GET  /v1/leave/requests?userId?status?from?to`
-- `POST /v1/leave/requests`
-- `POST /v1/leave/requests/:id/approve`
-- `POST /v1/leave/requests/:id/reject`
-- `POST /v1/leave/requests/:id/cancel`
-
-### Holidays
-- `GET  /v1/holidays`
-- `POST /v1/holidays`
-- `DELETE /v1/holidays/:id`
+- Calendars
+  - `POST /v1/payroll/calendars`
+  - `GET  /v1/payroll/calendars`
+- Runs
+  - `POST /v1/payroll/runs`
+  - `POST /v1/payroll/runs/:id/calc`
+  - `POST /v1/payroll/runs/:id/submit`
+  - `POST /v1/payroll/runs/:id/approve`
+  - `POST /v1/payroll/runs/:id/finalize`
+  - `GET  /v1/payroll/runs/:id`
+- Payslips
+  - `GET  /v1/payslips/:id/pdf-url`
 
 ## Notes
-- RLS enforced by setting `app.tenant_id` in every transaction.
-- RBAC:
-  - Employees clock themselves; create/read/cancel their own leave.
-  - Managers/HR/Owner can read tenant-wide and approve/reject.
-  - HR/Owner manage leave types and holidays.
-- Basic overlap and holiday validation included.
+- RLS enforced for all payroll tables.
+- RBAC uses `PAYROLL_RUN` for all payroll endpoints.
+- `NODE_ENV=test` calculates payslips synchronously for deterministic tests.
+- Worker jobs:
+  - `payrollCalc`: creates payslips.
+  - `payslipPdf`: creates PDFs and uploads to S3 (stub).
+
+## Dev
+```
+pnpm i
+pnpm --filter @hr/api prisma:generate
+pnpm --filter @hr/api prisma:migrate --name payroll_core
+docker compose up -d
+pnpm --filter @hr/api dev
+pnpm --filter @hr/worker dev
+```
+
+## Tests
+```
+pnpm --filter @hr/api test
+```

@@ -12,8 +12,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    volumes: [ "pgdata:/var/lib/postgresql/data" ]
 
   redis:
     image: redis:7-alpine
@@ -31,8 +30,7 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
     ports: ["9000:9000", "9001:9001"]
-    volumes:
-      - minio:/data
+    volumes: [ "minio:/data" ]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
@@ -66,14 +64,10 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hr?schema=public
     ports: ["3000:3000"]
     depends_on:
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - .:/srv
+      postgres: { condition: service_healthy }
+      minio: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    volumes: [ ".:/srv" ]
 
   web:
     build:
@@ -85,10 +79,8 @@ services:
       PORT: 5173
       VITE_API_URL: http://localhost:3000
     ports: ["5173:5173"]
-    depends_on:
-      - api
-    volumes:
-      - .:/srv
+    depends_on: [ api ]
+    volumes: [ ".:/srv" ]
 
   worker:
     build:
@@ -98,14 +90,17 @@ services:
     command: pnpm --filter @hr/worker dev
     environment:
       REDIS_URL: redis://redis:6379
+      STORAGE_ENDPOINT: http://minio:9000
+      STORAGE_REGION: us-east-1
+      STORAGE_ACCESS_KEY: minio
+      STORAGE_SECRET_KEY: minio123
+      STORAGE_BUCKET: hr-dev
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hr?schema=public
     depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    volumes:
-      - .:/srv
+      redis: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      minio: { condition: service_healthy }
+    volumes: [ ".:/srv" ]
 
 volumes:
   pgdata:

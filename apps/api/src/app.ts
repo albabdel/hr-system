@@ -1,4 +1,3 @@
-
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -22,6 +21,8 @@ import analyticsRouter from './routes/analytics.js';
 import billingRouter from './routes/billing.js';
 import stripeWebhook from './routes/webhooks/stripe.js';
 import integrationsRouter from './routes/integrations.js';
+// NEW
+import brandingRouter from './routes/branding.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -56,6 +57,7 @@ export function createApp() {
   app.use('/v1/analytics', analyticsRouter);
   app.use('/v1/billing', billingRouter);
   app.use('/v1/integrations', integrationsRouter);
+  app.use('/v1/branding', brandingRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

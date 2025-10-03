@@ -1,4 +1,3 @@
-
 export type Role = 'OWNER' | 'HR_ADMIN' | 'MANAGER' | 'EMPLOYEE';
 
 export enum Action {
@@ -15,10 +14,10 @@ export enum Action {
   LEAVE_REQUEST_CANCEL = 'leave:request:cancel',
   LEAVE_TYPE_MANAGE = 'leave:type:manage',
   HOLIDAY_MANAGE = 'holiday:manage',
-  LMS_MANAGE = 'lms:manage',
-  LMS_READ = 'lms:read',
   BILLING_MANAGE = 'billing:manage',
-  INTEGRATION_MANAGE = 'integration:manage'
+  INTEGRATION_MANAGE = 'integration:manage',
+  // NEW
+  THEME_MANAGE = 'theme:manage'
 }
 
 export enum Scope { OWN = 'own', TENANT = 'tenant', ALL = 'all' }

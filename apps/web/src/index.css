@@ -2,10 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS variables for theming (default values) */
 :root {
-  color-scheme: light dark;
+  --color-primary: #0ea5e9;   /* sky-500 */
+  --color-accent: #22c55e;    /* green-500 */
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #111827;    /* gray-900 */
 }
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 body {
   @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100;
 }
 a { @apply text-blue-600 hover:underline; }
+
+/* Use variables within Tailwind via utility classes (bg-[color]) where needed */

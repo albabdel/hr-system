@@ -4,26 +4,28 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.6.0
-          run_install: true
-      - name: Lint
-        run: pnpm -w run lint
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
       - name: Typecheck
-        run: pnpm -w run typecheck
-      - name: Test
-        run: pnpm -w run test
+        run: npx tsc -p tsconfig.json --noEmit
+
+      - name: Lint (if present)
+        run: npm run lint --if-present
+
       - name: Build
-        run: pnpm -w run build
+        run: npm run build

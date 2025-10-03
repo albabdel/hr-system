@@ -18,6 +18,7 @@ import lmsRouter from './routes/lms.js';
 import payrollCalendarsRouter from './routes/payroll-calendars.js';
 import payrollRunsRouter from './routes/payroll-runs.js';
 import payslipsRouter from './routes/payslips.js';
+import analyticsRouter from './routes/analytics.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
@@ -47,6 +48,7 @@ export function createApp() {
   app.use('/v1/payroll', payrollCalendarsRouter);
   app.use('/v1/payroll', payrollRunsRouter);
   app.use('/v1/payslips', payslipsRouter);
+  app.use('/v1/analytics', analyticsRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

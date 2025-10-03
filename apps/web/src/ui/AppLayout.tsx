@@ -1,19 +1,24 @@
 import React from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { getAuth, clearAuth } from "../lib/auth";
 
 export function AppLayout() {
   const nav = useNavigate();
+  const loc = useLocation();
   const auth = getAuth();
   const tenant = auth?.tenantSlug || "—";
   const user = auth?.user?.email || "—";
+  const link = (to: string, label: string) => (
+    <Link to={to} className={`block hover:underline ${loc.pathname.startsWith(to) ? "font-semibold" : ""}`}>{label}</Link>
+  );
   return (
     <div className="min-h-screen grid grid-cols-[240px_1fr]">
       <aside className="border-r p-4 space-y-4">
         <div className="text-lg font-semibold">HR SaaS</div>
         <nav className="space-y-2">
-          <Link to="/employees" className="block hover:underline">Employees</Link>
-          <Link to="/lms" className="block hover:underline">LMS</Link>
+          {link("/employees", "Employees")}
+          {link("/lms", "LMS")}
+          {link("/analytics", "Analytics")}
         </nav>
       </aside>
       <main className="p-6">

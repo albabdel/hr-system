@@ -15,7 +15,8 @@ export enum Action {
   LEAVE_TYPE_MANAGE = 'leave:type:manage',
   HOLIDAY_MANAGE = 'holiday:manage',
   LMS_MANAGE = 'lms:manage', // create/edit courses
-  LMS_READ = 'lms:read'      // view and enroll
+  LMS_READ = 'lms:read',      // view and enroll
+  BILLING_MANAGE = 'billing:manage'
 }
 
 export enum Scope { OWN = 'own', TENANT = 'tenant', ALL = 'all' }

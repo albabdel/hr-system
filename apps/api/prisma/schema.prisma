@@ -9,9 +9,9 @@ datasource db {
 enum Role { OWNER HR_ADMIN MANAGER EMPLOYEE }
 enum PayrollFrequency { MONTHLY BIWEEKLY WEEKLY CUSTOM }
 enum PayrollRunStatus { DRAFT REVIEW APPROVED FINALIZED }
-
-// NEW
 enum ExportJobStatus { QUEUED RUNNING DONE ERROR }
+enum PlanCode { BASIC PRO ENTERPRISE }
+enum SubscriptionStatus { INCOMPLETE TRIALING ACTIVE PAST_DUE CANCELED UNPAID }
 
 model Tenant {
   id            String           @id @default(uuid())
@@ -33,8 +33,8 @@ model Tenant {
   payrollCalendars PayrollCalendar[]
   payrollRuns      PayrollRun[]
   payslips         Payslip[]
-  // NEW
   exportJobs       ExportJob[]
+  subscription     BillingSubscription?
 }
 
 model User {
@@ -76,7 +76,6 @@ model Employee {
   email        String
   position     String?
   hiredAt      DateTime?
-  // NEW
   terminatedAt DateTime?
   status       String      @default("ACTIVE")
   createdAt    DateTime    @default(now())
@@ -87,7 +86,6 @@ model Employee {
   documents    EmployeeDocument[]
   payslips     Payslip[]
   @@unique([tenantId, email], map: "employee_email_per_tenant_unique")
-  @@index([tenantId, employeeId: id])
   @@index([tenantId, departmentId], map: "employee_dept_idx")
 }
 
@@ -105,7 +103,6 @@ model FileObject {
   tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employeeLinks   EmployeeDocument[]
   payslipPdfOf    Payslip[]
-  exportJob       ExportJob[]
   @@index([tenantId], map: "file_tenant_idx")
   @@unique([tenantId, bucket, objectKey], map: "file_unique_per_tenant")
 }
@@ -180,7 +177,6 @@ model LeaveType {
   requiresApproval Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   @@unique([tenantId, code], map: "leavetype_code_per_tenant")
   @@index([tenantId, name])
@@ -270,11 +266,10 @@ model Payslip {
   @@index([tenantId, employeeId])
 }
 
-// NEW
 model ExportJob {
   id        String          @id @default(uuid())
   tenantId  String
-  type      String          // 'headcount' | 'payroll-cost'
+  type      String
   params    Json?
   status    ExportJobStatus @default(QUEUED)
   fileId    String?
@@ -284,4 +279,22 @@ model ExportJob {
   tenant    Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   file      FileObject?     @relation(fields: [fileId], references: [id], onDelete: SetNull)
   @@index([tenantId, type, status])
+}
+
+model BillingSubscription {
+  id                   String             @id @default(uuid())
+  tenantId             String             @unique
+  plan                 PlanCode
+  status               SubscriptionStatus @default(INCOMPLETE)
+  seats                Int                @default(1)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  delinquent           Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  tenant               Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  @@index([status])
 }

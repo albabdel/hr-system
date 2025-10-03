@@ -19,12 +19,17 @@ import payrollCalendarsRouter from './routes/payroll-calendars.js';
 import payrollRunsRouter from './routes/payroll-runs.js';
 import payslipsRouter from './routes/payslips.js';
 import analyticsRouter from './routes/analytics.js';
+import billingRouter from './routes/billing.js';
+import stripeWebhook from './routes/webhooks/stripe.js';
 import { mountDocs } from './openapi.js';
 import { ensureBucket } from './storage/s3.js';
 
 export function createApp() {
   const app = express();
   const log = pino({ name: 'api', level: process.env.NODE_ENV === 'test' ? 'silent' : 'info' });
+
+  // Stripe webhook needs raw body, so mount it BEFORE json middleware.
+  app.use(stripeWebhook);
 
   app.use(helmet());
   app.use(cors({ origin: true, credentials: true }));
@@ -49,6 +54,7 @@ export function createApp() {
   app.use('/v1/payroll', payrollRunsRouter);
   app.use('/v1/payslips', payslipsRouter);
   app.use('/v1/analytics', analyticsRouter);
+  app.use('/v1/billing', billingRouter);
 
   mountDocs(app);
   app.use(errorMiddleware);

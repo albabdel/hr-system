@@ -16,7 +16,8 @@ export const PERMISSIONS: Matrix = {
     { action: Action.LEAVE_TYPE_MANAGE, scope: Scope.TENANT },
     { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT },
     { action: Action.LMS_MANAGE, scope: Scope.TENANT },
-    { action: Action.LMS_READ, scope: Scope.TENANT }
+    { action: Action.LMS_READ, scope: Scope.TENANT },
+    { action: Action.BILLING_MANAGE, scope: Scope.TENANT }
   ],
   HR_ADMIN: [
     { action: Action.EMPLOYEE_READ, scope: Scope.TENANT },
@@ -33,7 +34,8 @@ export const PERMISSIONS: Matrix = {
     { action: Action.LEAVE_TYPE_MANAGE, scope: Scope.TENANT },
     { action: Action.HOLIDAY_MANAGE, scope: Scope.TENANT },
     { action: Action.LMS_MANAGE, scope: Scope.TENANT },
-    { action: Action.LMS_READ, scope: Scope.TENANT }
+    { action: Action.LMS_READ, scope: Scope.TENANT },
+    { action: Action.BILLING_MANAGE, scope: Scope.TENANT }
   ],
   MANAGER: [
     { action: Action.EMPLOYEE_READ, scope: Scope.TENANT }, // team will be narrower later

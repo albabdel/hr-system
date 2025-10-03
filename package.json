@@ -1,19 +1,16 @@
 {
-  "name": "hr-saas",
+  "name": "hr-system",
   "private": true,
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@9.12.2",
+  "engines": { "node": ">=20" },
   "scripts": {
-    "dev": "turbo run dev --parallel --",
+    "dev": "turbo run dev --parallel -- --port 9002 --hostname 0.0.0.0",
     "build": "turbo run build",
-    "start": "turbo run start",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --write ."
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "eslint": "^9.10.0",
-    "prettier": "^3.3.3",
-    "turbo": "^2.1.2"
+    "turbo": "2.5.8"
   }
 }

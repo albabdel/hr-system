@@ -1,40 +1,20 @@
 {
   "name": "@hr/web",
-  "version": "0.3.0",
   "private": true,
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "start": "vite preview --port 5173",
-    "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "playwright test",
-    "e2e": "playwright test"
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 9002"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.9.0",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@tanstack/react-query": "^5.51.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.53.0",
-    "react-router-dom": "^6.26.2",
-    "recharts": "^2.12.7",
-    "zod": "^3.23.8"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.47.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.3.0",
-    "@typescript-eslint/parser": "^8.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.10.0",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.10",
+    "@vitejs/plugin-react": "^4.3.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.2"
+    "vite": "^5.4.0"
   }
 }

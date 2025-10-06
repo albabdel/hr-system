@@ -1,0 +1,12 @@
+
+> @hr/web@0.3.0 dev
+> vite --host 0.0.0.0 --port 9002 --port 9002 --hostname 0.0.0.0
+
+sh: line 1: vite: command not found
+npm error Lifecycle script `dev` failed with error:
+npm error code 127
+npm error path /home/user/studio/apps/web
+npm error workspace @hr/web@0.3.0
+npm error location /home/user/studio/apps/web
+npm error command failed
+npm error command sh -c vite --host 0.0.0.0 --port 9002 --port 9002 --hostname 0.0.0.0

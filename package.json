@@ -1,16 +1,21 @@
 {
   "name": "hr-system",
   "private": true,
-  "packageManager": "pnpm@9.12.2",
+  "packageManager": "npm@10.8.2",
   "engines": { "node": ">=20" },
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "turbo run dev --parallel -- --port 9002 --hostname 0.0.0.0",
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "dev": "npx turbo run dev --filter=@hr/web -- --host 0.0.0.0 --port 9002",
+    "build": "npx turbo run build",
+    "test": "npx turbo run test",
+    "lint": "npx turbo run lint",
+    "typecheck": "npx turbo run typecheck"
   },
   "devDependencies": {
     "turbo": "2.5.8"
+  },
+  "overrides": {
+    "@aws-sdk/core": "3.535.0",
+    "@aws-sdk/credential-provider-node": "3.535.0"
   }
 }

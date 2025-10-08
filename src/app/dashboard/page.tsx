@@ -1,25 +1,7 @@
-"use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-
-interface ApiEmployee {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  avatarUrl?: string; // assuming API might provide this
-  imageHint?: string;
-  position: string;
-}
-
-interface Metrics {
-  headcount: number;
-  pendingLeave: number;
-  openClocks: number;
-}
 
 const chartData = [
   { name: "Jan", hires: 4, departures: 1 },
@@ -31,21 +13,6 @@ const chartData = [
 ];
 
 export default function DashboardPage() {
-  const [employees, setEmployees] = useState<ApiEmployee[]>([]);
-  const [metrics, setMetrics] = useState<Metrics | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      fetch('/api/employees').then(res => res.json()),
-      fetch('/api/metrics').then(res => res.json())
-    ]).then(([employeeData, metricsData]) => {
-      setEmployees(employeeData);
-      setMetrics(metricsData);
-    }).catch(console.error)
-    .finally(() => setLoading(false));
-  }, []);
 
   return (
     <div className="grid gap-8">
@@ -55,7 +22,7 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
-            {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.headcount}</div>}
+            <div className="text-2xl font-bold">1,254</div>
             <p className="text-xs text-muted-foreground">+2 since last month</p>
           </CardContent>
         </Card>
@@ -64,7 +31,7 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Clocked In</CardTitle>
           </CardHeader>
           <CardContent>
-            {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.openClocks}</div>}
+            <div className="text-2xl font-bold">87</div>
              <p className="text-xs text-muted-foreground">Currently active</p>
           </CardContent>
         </Card>
@@ -73,7 +40,7 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Pending Leave</CardTitle>
           </CardHeader>
           <CardContent>
-             {loading || metrics === null ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{metrics.pendingLeave}</div>}
+             <div className="text-2xl font-bold">12</div>
             <p className="text-xs text-muted-foreground">Requests needing review</p>
           </CardContent>
         </Card>
@@ -119,28 +86,38 @@ export default function DashboardPage() {
              <CardDescription>Recently joined employees.</CardDescription>
           </CardHeader>
           <CardContent>
-             {loading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-            ) : (
             <div className="space-y-4">
-              {employees.slice(0, 4).map((employee) => (
-                <div key={employee._id} className="flex items-center gap-4">
+              <div className="flex items-center gap-4">
                   <Avatar>
-                    <AvatarImage src={`https://picsum.photos/seed/${employee._id}/40/40`} alt={`${employee.firstName} ${employee.lastName}`} data-ai-hint={'person face'} />
-                    <AvatarFallback>{employee.firstName.charAt(0)}</AvatarFallback>
+                    <AvatarImage src="https://picsum.photos/seed/1/40/40" alt="Alex Chen" data-ai-hint={'person face'} />
+                    <AvatarFallback>AC</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">{`${employee.firstName} ${employee.lastName}`}</p>
-                    <p className="text-sm text-muted-foreground">{employee.position}</p>
+                    <p className="font-semibold">Alex Chen</p>
+                    <p className="text-sm text-muted-foreground">Software Engineer</p>
                   </div>
                 </div>
-              ))}
+                 <div className="flex items-center gap-4">
+                  <Avatar>
+                    <AvatarImage src="https://picsum.photos/seed/2/40/40" alt="Maria Garcia" data-ai-hint={'person face'} />
+                    <AvatarFallback>MG</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">Maria Garcia</p>
+                    <p className="text-sm text-muted-foreground">UX/UI Designer</p>
+                  </div>
+                </div>
+                 <div className="flex items-center gap-4">
+                  <Avatar>
+                    <AvatarImage src="https://picsum.photos/seed/3/40/40" alt="David Lee" data-ai-hint={'person face'} />
+                    <AvatarFallback>DL</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">David Lee</p>
+                    <p className="text-sm text-muted-foreground">Marketing Specialist</p>
+                  </div>
+                </div>
             </div>
-            )}
           </CardContent>
         </Card>
       </div>

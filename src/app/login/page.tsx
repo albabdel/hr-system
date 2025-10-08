@@ -28,7 +28,8 @@ export default function LoginPage() {
       const { data, text } = await safeJson(res);
       if (!res.ok) throw new Error(data?.error?.message || text || "Login failed");
       
-      r.replace("/setup"); // will redirect to /dashboard if already completed
+      // Use window.location.href to force a full page reload and trigger middleware
+      window.location.href = "/setup";
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }
   }
 

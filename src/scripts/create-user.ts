@@ -9,7 +9,7 @@ import User from "@/models/User";
 async function main() {
   if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI missing");
   await mongoose.connect(process.env.MONGODB_URI, { dbName: "vrs" });
-  const tenantId = "demo";
+  const tenantId = "verifiedrecruitmentservices";
   const email = "abdelqader.badarnah@gmail.com";
   const passwordHash = await bcrypt.hash("admin", 12);
 

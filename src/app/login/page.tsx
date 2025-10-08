@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { safeJson } from "@/lib/safeJson";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const r = useRouter();
@@ -18,10 +19,12 @@ export default function LoginPage() {
     const fd = new FormData(e.currentTarget);
     const email = String(fd.get("email")).trim().toLowerCase();
     const password = String(fd.get("password"));
+    const tenantId = String(fd.get("tenantId")).trim().toLowerCase();
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-tenant-id": "demo" }, // dev
+        headers: { "Content-Type": "application/json", "x-tenant-id": tenantId },
         body: JSON.stringify({ email, password }),
       });
 
@@ -42,8 +45,18 @@ export default function LoginPage() {
         </CardHeader>
         <form onSubmit={onSubmit}>
           <CardContent className="space-y-4">
-            <Input name="email" type="email" placeholder="Email" required />
-            <Input name="password" type="password" placeholder="Password" required />
+             <div>
+              <Label htmlFor="tenantId">Tenant</Label>
+              <Input id="tenantId" name="tenantId" placeholder="Your company's identifier" required defaultValue="verifiedrecruitmentservices" />
+            </div>
+             <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="Email" required />
+            </div>
+             <div>
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" name="password" type="password" placeholder="Password" required />
+            </div>
             {err && <p className="text-red-600 text-sm">{err}</p>}
           </CardContent>
           <CardFooter className="flex flex-col items-stretch">

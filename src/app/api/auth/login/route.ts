@@ -13,7 +13,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: { message: "Email and password are required" } }, { status: 400 });
   }
 
-  const tenantId = req.headers.get("x-tenant-id")?.toLowerCase() || resolveTenantId();
+  const host = req.headers.get("host") || undefined;
+  const headerTenant = req.headers.get("x-tenant-id")?.toLowerCase() || undefined;
+  const tenantId = resolveTenantId(host, headerTenant);
+  
+  if (!tenantId) {
+    return NextResponse.json({ error: { message: "Tenant ID could not be resolved." } }, { status: 400 });
+  }
+
   const user = await User.findOne({ tenantId, email: String(email).toLowerCase() }).lean();
   if (!user?.passwordHash) {
     return NextResponse.json({ error:{message:"Invalid credentials"} }, { status:401 });

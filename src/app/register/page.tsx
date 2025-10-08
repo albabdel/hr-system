@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { safeJson } from "@/lib/safeJson";
 
 export default function RegisterTenantPage() {
   const r = useRouter();
@@ -25,8 +26,8 @@ export default function RegisterTenantPage() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message || "Failed");
+      const { data, text } = await safeJson(res);
+      if (!res.ok) throw new Error(data?.error?.message || text || "Registration failed");
       r.replace("/setup");
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }
   }

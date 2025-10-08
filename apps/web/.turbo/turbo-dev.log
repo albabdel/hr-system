@@ -2119,3 +2119,213 @@ Error: Objects are not valid as a React child (found: object with keys {$$typeof
     at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
 Each child in a list should have a unique "key" prop.
 
+Check the render method of `Head`. See https://react.dev/link/warning-keys for more information.
+ GET / 500 in 166ms
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31) {
+  page: '/'
+}
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Head`. See https://react.dev/link/warning-keys for more information.
+ GET / 500 in 80ms
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31) {
+  page: '/'
+}
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Head`. See https://react.dev/link/warning-keys for more information.
+ GET / 500 in 68ms
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at finishFunctionComponent (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5433:13)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5879:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7243:18)
+    at renderChildrenArray (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7012:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6779:13)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5997:13)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31) {
+  page: '/'
+}
+Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+ ⨯ Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, ref, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6812:17)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:5810:11)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at renderNodeDestructive (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6705:11)
+    at renderElement (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6391:15)
+    at retryNode (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:6755:31)
+    at performWork (/home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:7783:17)
+    at /home/user/studio/node_modules/react-dom/cjs/react-dom-server.browser.development.js:8655:16
+    at node:internal/process/task_queues:140:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+Each child in a list should have a unique "key" prop.
+

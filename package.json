@@ -2,20 +2,31 @@
   "name": "hr-system",
   "private": true,
   "packageManager": "npm@10.8.2",
-  "engines": { "node": ">=20" },
-  "workspaces": ["apps/*", "packages/*"],
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "npx turbo run dev --filter=@hr/web -- --host 0.0.0.0 --port 9002",
+    "dev": "npx turbo run dev --filter=@hr/web -- --hostname 0.0.0.0 --port 9002",
     "build": "npx turbo run build",
     "test": "npx turbo run test",
     "lint": "npx turbo run lint",
     "typecheck": "npx turbo run typecheck"
   },
   "devDependencies": {
-    "turbo": "2.5.8"
+    "@vitejs/plugin-react": "^5.0.4",
+    "turbo": "2.5.8",
+    "vite": "^7.1.9"
   },
   "overrides": {
     "@aws-sdk/core": "3.535.0",
     "@aws-sdk/credential-provider-node": "3.535.0"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }

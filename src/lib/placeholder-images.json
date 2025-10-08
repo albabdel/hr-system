@@ -7,46 +7,10 @@
       "imageHint": "woman smiling"
     },
     {
-      "id": "2",
-      "description": "Avatar for Harry Bender",
-      "imageUrl": "https://images.unsplash.com/photo-1627554785796-f9646d15c2da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYW4lMjBnbGFzc2VzfGVufDB8fHx8MTc1OTIzNDAxOHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man glasses"
-    },
-    {
-      "id": "3",
-      "description": "Avatar for Jonathan Kelly",
-      "imageUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW4lMjBwcm9maWxlfGVufDB8fHx8MTc1OTE3Mjc2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man profile"
-    },
-    {
-      "id": "4",
-      "description": "Avatar for Billie Wright",
-      "imageUrl": "https://images.unsplash.com/photo-1513673054901-2b5f51551112?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3b21hbiUyMGdsYXNzZXN8ZW58MHx8fHwxNzU5MjAyNTIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman glasses"
-    },
-    {
-      "id": "5",
-      "description": "Avatar for Sarah Page",
-      "imageUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTkxNzE2NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman portrait"
-    },
-    {
-      "id": "6",
-      "description": "Avatar for Erica Wyatt",
-      "imageUrl": "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMHByb2Zlc3Npb25hbHxlbnwwfHx8fDE3NTkyNTMwOTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman professional"
-    },
-    {
-      "id": "7",
-      "description": "Avatar for Alex Chen",
-      "imageUrl": "https://images.unsplash.com/photo-1623184663110-89ba5b565eb6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBzbWlsaW5nfGVufDB8fHx8MTc1OTI1ODQ3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man smiling"
-    },
-    {
-      "id": "8",
-      "description": "Avatar for Maria Garcia",
-      "imageUrl": "https://images.unsplash.com/photo-1678801868960-011d055d8725?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMG91dGRvb3J8ZW58MHx8fHwxNzU5MjU1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman outdoor"
+      "id": "9",
+      "description": "MacBook Air",
+      "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWNib29rJTIwYWlyfGVufDB8fHx8MTc1OTI1ODQ3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "laptop computer"
     }
   ]
 }

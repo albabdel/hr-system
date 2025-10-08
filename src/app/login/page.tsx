@@ -32,7 +32,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data?.error?.message || text || "Login failed");
       
       // Use window.location.href to force a full page reload and trigger middleware
-      window.location.href = "/setup";
+      window.location.href = "/dashboard";
     } catch (e:any) { setErr(e.message); } finally { setLoading(false); }
   }
 

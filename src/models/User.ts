@@ -1,3 +1,4 @@
+
 import { Schema, model, models } from "mongoose";
 const UserSchema = new Schema({
   tenantId: { type: String, index: true, required: true },

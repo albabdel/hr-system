@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ async function safeJson(res: Response) {
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,8 +46,10 @@ export default function LoginPage() {
         throw new Error(data?.error?.message || text || "Login failed");
       }
 
-      // Hard navigation to trigger middleware
-      window.location.href = "/dashboard";
+      // Use Next.js router for navigation
+      router.push("/dashboard");
+      router.refresh();
+
     } catch (e: any) {
       setError(e.message);
     } finally {

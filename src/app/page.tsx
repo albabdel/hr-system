@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-  // The middleware will handle redirection based on auth status.
-  // This page can be a marketing page or redirect to login/dashboard.
-  redirect('/login');
+  // Redirect directly to the dashboard since auth is removed.
+  redirect('/dashboard');
 }

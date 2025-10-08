@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -8,9 +7,13 @@ import { Check, ChevronRight, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const MenubarMenu = MenubarPrimitive.Menu
+
 const MenubarGroup = MenubarPrimitive.Group
+
 const MenubarPortal = MenubarPrimitive.Portal
+
 const MenubarSub = MenubarPrimitive.Sub
+
 const MenubarRadioGroup = MenubarPrimitive.RadioGroup
 
 const Menubar = React.forwardRef<
@@ -197,13 +200,12 @@ const MenubarSeparator = React.forwardRef<
 ))
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName
 
-const MenubarShortcut = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => {
+const MenubarShortcut = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
-      ref={ref}
       className={cn(
         "ml-auto text-xs tracking-widest text-muted-foreground",
         className
@@ -211,7 +213,7 @@ const MenubarShortcut = React.forwardRef<
       {...props}
     />
   )
-})
+}
 MenubarShortcut.displayName = "MenubarShortcut"
 
 export {

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// This middleware allows all requests to pass through, effectively disabling authentication.
 export function middleware(req: NextRequest) {
-  // Authentication has been removed. All requests are allowed.
   return NextResponse.next();
 }
 
@@ -14,7 +14,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - careers (public careers page)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|careers).*)',
   ],
 };

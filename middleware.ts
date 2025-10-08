@@ -1,18 +1,21 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
+// This middleware allows all requests to pass through, effectively disabling authentication.
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("vrs_token")?.value;
-  const isAuthPage = req.nextUrl.pathname.startsWith("/login") || req.nextUrl.pathname.startsWith("/register");
-
-  if (!token && !isAuthPage) {
-    const url = req.nextUrl.clone(); url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-  if (token && isAuthPage) {
-    const url = req.nextUrl.clone(); url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
   return NextResponse.next();
 }
-export const config = { matcher: ["/((?!_next|api/public|public|favicon.ico).*)"] };
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - careers (public careers page)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|careers).*)',
+  ],
+};
